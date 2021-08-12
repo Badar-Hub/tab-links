@@ -3,15 +3,20 @@
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import envLoader, { logger } from '~/utils';
 import { connection } from '~/config';
 import routes from '~/routes';
+
+dotenv.config();
 
 const port = process.env.PORT ?? 4000;
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(routes);
+
+console.log(process.env.CONNECTION_STRING_MONGO);
 
 if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'staging') {
 	// eslint-disable-next-line global-require

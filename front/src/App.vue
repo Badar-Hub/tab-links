@@ -11,6 +11,7 @@
       </q-toolbar>
 
       <q-tabs align="left">
+        <q-route-tab to="/vendors" label="Vendors" />
         <q-route-tab to="/brands" label="Brands" />
         <q-route-tab to="/categories" label="Categories" />
         <q-route-tab to="/products" label="Products" />
@@ -25,10 +26,10 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref } from 'vue';
 
 export default {
-  name: "App",
+  name: 'App',
 
   setup() {
     return {

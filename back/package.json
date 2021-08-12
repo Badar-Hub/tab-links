@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"engines": {
-		"node": "14.15.3",
+		"node": "14.17.4",
 		"npm": "6.14.13"
 	},
 	"author": "Abdulmoiz Ahmer",
@@ -13,8 +13,7 @@
 		"seed": "npx babel-node database/seeders.js",
 		"format": "prettier --write \"./**/*.js\"",
 		"lint": "eslint \"./**/*.js\"",
-		"test": "mocha --timeout 10000",
-		"prepare": "husky install"
+		"test": "mocha --timeout 10000"
 	},
 	"dependencies": {
 		"@sendgrid/mail": "^7.4.4",
@@ -48,7 +47,6 @@
 		"eslint-import-resolver-babel-module": "^5.3.1",
 		"eslint-plugin-import": "^2.22.1",
 		"eslint-plugin-prettier": "^3.4.0",
-		"husky": ">=6",
 		"kill-port": "^1.6.1",
 		"lint-staged": ">=10",
 		"mocha": "^9.0.1",

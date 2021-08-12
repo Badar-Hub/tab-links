@@ -8,6 +8,11 @@ const routes = [
     component: Home,
   },
   {
+    path: "/vendors",
+    name: "Vendors",
+    component: () => import("../domain/vendors/VendorList.vue"),
+  },
+  {
     path: "/brands",
     name: "Brands",
     component: () => import("../domain/brands/BrandList.vue"),
@@ -21,6 +26,11 @@ const routes = [
     path: "/products",
     name: "Products",
     component: () => import("../domain/products/ProductList.vue"),
+  },
+  {
+    path: "/inventory",
+    name: "Inventory",
+    component: () => import("../domain/inventory/InventoryList.vue"),
   },
 ];
 

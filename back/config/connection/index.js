@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import { logger } from '~/utils';
 
-
+dotenv.config();
 // Mongoose connection
 mongoose
 	.connect(process.env.CONNECTION_STRING_MONGO, {
