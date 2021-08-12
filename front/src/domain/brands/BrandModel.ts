@@ -1,5 +1,5 @@
 export default interface BrandModel {
-  id?: string;
+  _id?: string;
   name: string;
   createdAt?: string;
 }

@@ -47,17 +47,17 @@ export default defineComponent({
     });
 
     const setToEdit = (brandData: BrandModel) => {
-      brand.value.id = brandData.id;
+      brand.value._id = brandData._id;
       brand.value.name = brandData.name;
     };
 
     const resetForm = () => {
-      brand.value.id = "";
+      brand.value._id = "";
       brand.value.name = "";
     };
 
     const onSubmit = async () => {
-      if (brand.value.id) {
+      if (brand.value._id) {
         console.log("Update Brand");
       } else {
         console.log("Add New Brand");

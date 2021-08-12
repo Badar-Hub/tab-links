@@ -1,6 +1,7 @@
 import testRoutes from './test.route';
 import profileRoutes from './profile.route';
 import vendorRoutes from './vendor.route';
+import brandRoutes from './brand.route';
 
 //  Private endpoints registered in List
 //  List is iteratively registered in main index file
@@ -17,6 +18,10 @@ const authenticatedRoutes = [
 	{
 		path: '/vendors',
 		route: vendorRoutes,
+	},
+	{
+		path: '/brands',
+		route: brandRoutes,
 	},
 ];
 

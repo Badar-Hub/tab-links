@@ -31,9 +31,10 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent, onMounted } from "vue";
 import BrandCard from "./BrandCard.vue";
 import BrandModel from "./BrandModel";
+import BrandService from "./BrandsService";
 import NewBrandModal from "./NewBrandModal.vue";
 
 export default defineComponent({
@@ -46,18 +47,15 @@ export default defineComponent({
     const brandRef = ref();
     const isEditing = ref(false);
 
-    const brands = [
-      {
-        id: "50-",
-        name: "Hello",
-        createdAt: "12-01-2020",
-      },
-      {
-        id: "50-",
-        name: "World",
-        createdAt: "12-01-2020",
-      },
-    ];
+    const brands = ref<BrandModel[]>([]);
+
+    const getBrands = async () => {
+      try {
+        brands.value = await BrandService.getBrands();
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     const newBrandAction = () => {
       isEditing.value = false;
@@ -77,8 +75,17 @@ export default defineComponent({
 
     const refreshList = async () => {
       console.log("reset-list");
+      getBrands();
       brandModal.value = !brandModal.value;
     };
+
+    onMounted(async () => {
+      try {
+        getBrands();
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
     return {
       brands,
