@@ -9,7 +9,12 @@ export const updateBrandInfo = async (request, response) => {
 
 		const brand = await BrandSchema.findById(id);
 		if (!brand) {
-			throw new Error("Vendor with this name does't exist");
+			throw new Error("Brand with this ID does't exist");
+		}
+
+		const checkName = await BrandSchema.findOne({ name });
+		if (checkName) {
+			throw new Error('Brand with this name already exist');
 		}
 
 		const updateBrand = await BrandSchema.updateOne({

@@ -27,9 +27,10 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
-import Modal from "../../components/General/Modal.vue";
-import BrandModel from "./BrandModel";
+import { ref, defineComponent } from 'vue';
+import Modal from '../../components/General/Modal.vue';
+import BrandModel from './BrandModel';
+import BrandService from './BrandsService';
 
 export default defineComponent({
   components: {
@@ -43,7 +44,7 @@ export default defineComponent({
   },
   setup(_, context) {
     const brand = ref<BrandModel>({
-      name: "",
+      name: '',
     });
 
     const setToEdit = (brandData: BrandModel) => {
@@ -52,19 +53,23 @@ export default defineComponent({
     };
 
     const resetForm = () => {
-      brand.value._id = "";
-      brand.value.name = "";
+      brand.value._id = '';
+      brand.value.name = '';
     };
 
     const onSubmit = async () => {
-      if (brand.value._id) {
-        console.log("Update Brand");
-      } else {
-        console.log("Add New Brand");
+      try {
+        if (brand.value._id) {
+          await BrandService.updateBrand(brand.value);
+        } else {
+          await BrandService.newBrand(brand.value);
+        }
+        console.log(brand.value.name);
+        context.emit('close');
+        resetForm();
+      } catch (error) {
+        console.log(error, '|error');
       }
-      console.log(brand.value.name);
-      context.emit("close");
-      resetForm();
     };
 
     return {

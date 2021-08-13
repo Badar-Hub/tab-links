@@ -27,9 +27,10 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
-import Modal from "../../components/General/Modal.vue";
-import CategoryModel from "./CategoryModel";
+import { ref, defineComponent } from 'vue';
+import Modal from '../../components/General/Modal.vue';
+import CategoryModel from './CategoryModel';
+import CategoryService from './CategoryService';
 
 export default defineComponent({
   components: {
@@ -43,28 +44,31 @@ export default defineComponent({
   },
   setup(_, context) {
     const category = ref<CategoryModel>({
-      name: "",
+      name: '',
     });
 
     const resetForm = () => {
-      category.value.id = "";
-      category.value.name = "";
+      category.value._id = '';
+      category.value.name = '';
     };
 
     const setToEdit = async (categoryData: CategoryModel) => {
-      category.value.id = categoryData.id;
+      category.value._id = categoryData._id;
       category.value.name = categoryData.name;
     };
 
     const onSubmit = async () => {
-      if (category.value.id) {
-        console.log("Update Category");
-      } else {
-        console.log("New Category");
+      try {
+        if (category.value._id) {
+          await CategoryService.updateCategory(category.value);
+        } else {
+          await CategoryService.newCategory(category.value);
+        }
+        context.emit('close');
+        resetForm();
+      } catch (error) {
+        console.log(error);
       }
-      console.log(category.value.name);
-      context.emit("close");
-      resetForm();
     };
 
     return {

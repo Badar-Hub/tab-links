@@ -31,7 +31,7 @@
           <q-select
             filled
             v-model="product.brand"
-            :options="['Hello', 'World']"
+            :options="brands"
             label="Brands"
             lazy-rules
             :rules="[
@@ -43,7 +43,7 @@
           <q-select
             filled
             v-model="product.category"
-            :options="['Hello', 'World']"
+            :options="categories"
             label="Category"
             lazy-rules
             :rules="[
@@ -95,9 +95,14 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
-import Modal from "../../components/General/Modal.vue";
-import ProductModel from "./ProductModel";
+import { ref, defineComponent, onMounted } from 'vue';
+import Modal from '../../components/General/Modal.vue';
+import ProductModel from './ProductModel';
+import CategoryModel from '../categories/CategoryModel';
+import BrandModel from '../brands/BrandModel';
+import ProductService from './ProductService';
+import BrandsService from '../brands/BrandsService';
+import CategoryService from '../categories/CategoryService';
 
 export default defineComponent({
   components: {
@@ -110,29 +115,32 @@ export default defineComponent({
     },
   },
   setup(_, context) {
+    const brands = ref([]);
+    const categories = ref([]);
+
     const product = ref<ProductModel>({
-      sku: "",
-      name: "",
-      brand: "",
-      category: "",
+      sku: '',
+      name: '',
+      brand: '',
+      category: '',
       price: 0,
       discount: 0,
       costPrice: 0,
     });
 
     const resetForm = () => {
-      product.value.id = "";
-      product.value.sku = "";
-      product.value.name = "";
-      product.value.brand = "";
-      product.value.category = "";
+      product.value._id = '';
+      product.value.sku = '';
+      product.value.name = '';
+      product.value.brand = '';
+      product.value.category = '';
       product.value.price = 0;
       product.value.discount = 0;
       product.value.costPrice = 0;
     };
 
     const setToEdit = (productData: ProductModel) => {
-      product.value.id = productData.id;
+      product.value._id = productData._id;
       product.value.sku = productData.sku;
       product.value.name = productData.name;
       product.value.brand = productData.brand;
@@ -143,21 +151,40 @@ export default defineComponent({
     };
 
     const onSubmit = async () => {
-      if (product.value.id) {
-        console.log("Update Product");
-      } else {
-        console.log("Add New Product");
+      try {
+        if (product.value._id) {
+          await ProductService.updateProduct(product.value);
+        } else {
+          await ProductService.newProducts(product.value);
+        }
+        console.log(product.value);
+        context.emit('close');
+        resetForm();
+      } catch (error) {
+        console.log(error);
       }
-      console.log(product.value);
-      context.emit("close");
-      resetForm();
     };
+
+    onMounted(async () => {
+      try {
+        const allBrands = await BrandsService.getBrands();
+        brands.value = allBrands.map((brand: BrandModel) => brand.name);
+        const allCategories = await CategoryService.getCategories();
+        categories.value = allCategories.map(
+          (category: CategoryModel) => category.name
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
     return {
       setToEdit,
       onSubmit,
       resetForm,
       product,
+      brands,
+      categories,
     };
   },
 });

@@ -20,7 +20,7 @@
       >
         <CategoryCard
           @editAction="editCategory(category)"
-          @deleteAction="deleteCategory(category.id)"
+          @deleteAction="deleteCategory(category._id)"
           :category="category"
         />
       </div>
@@ -35,10 +35,11 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
-import CategoryCard from "./CategoryCard.vue";
-import CategoryModel from "./CategoryModel";
-import NewCategoryModal from "./NewCategoryModal.vue";
+import { ref, defineComponent, onMounted } from 'vue';
+import CategoryCard from './CategoryCard.vue';
+import CategoryModel from './CategoryModel';
+import NewCategoryModal from './NewCategoryModal.vue';
+import CategoryService from './CategoryService';
 
 export default defineComponent({
   components: {
@@ -49,18 +50,15 @@ export default defineComponent({
     const categoryModal = ref(false);
     const categoryRef = ref();
     const isEditing = ref(false);
-    const categories = ref<CategoryModel[]>([
-      {
-        id: "500",
-        name: "Hello",
-        createdAt: "12-01-2020",
-      },
-      {
-        id: "700",
-        name: "World",
-        createdAt: "12-01-2020",
-      },
-    ]);
+    const categories = ref<CategoryModel[]>([]);
+
+    const getCategories = async () => {
+      try {
+        categories.value = await CategoryService.getCategories();
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     const newCategoryAction = () => {
       isEditing.value = false;
@@ -71,20 +69,29 @@ export default defineComponent({
     const editCategory = async (category: CategoryModel) => {
       isEditing.value = true;
       categoryModal.value = true;
-      console.log("lol update category start");
+      console.log('lol update category start');
       categoryRef.value.setToEdit(category);
-      console.log("lol update category end");
+      console.log('lol update category end');
     };
 
     const deleteCategory = (id: string) => {
-      console.log("lol delete category start", id);
-      console.log("lol delete category end", id);
+      console.log('lol delete category start', id);
+      console.log('lol delete category end', id);
     };
 
     const refreshList = async () => {
-      console.log("reset-list");
+      console.log('reset-list');
+      getCategories();
       categoryModal.value = !categoryModal.value;
     };
+
+    onMounted(async () => {
+      try {
+        getCategories();
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
     return {
       isEditing,

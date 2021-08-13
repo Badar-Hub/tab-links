@@ -4,6 +4,13 @@ const Category = new mongoose.Schema({
 	name: {
 		type: String,
 	},
+	createdAt: {
+		type: String,
+	},
 });
 
-export const CategorySchema = mongoose.model('Category', Category, 'categories');
+export const CategorySchema = mongoose.model(
+	'Category',
+	Category,
+	'categories',
+);

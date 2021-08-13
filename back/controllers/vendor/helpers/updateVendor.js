@@ -12,6 +12,13 @@ export const updateVendorInfo = async (request, response) => {
 			throw new Error("Vendor with this name does't exist");
 		}
 
+		if (vendor.name !== name) {
+			const checkName = await VendorSchema.findOne({ name });
+			if (checkName) {
+				throw new Error('Vendor with this name already exist');
+			}
+		}
+
 		const updateVendor = await VendorSchema.updateOne({
 			_id: id,
 			$set: {

@@ -5,3 +5,5 @@ export * from './auth';
 export * from './profile';
 export * from './vendor';
 export * from './brands';
+export * from './categories';
+export * from './products';

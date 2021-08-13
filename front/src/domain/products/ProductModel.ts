@@ -1,5 +1,5 @@
 export default interface ProductModel {
-  id?: string;
+  _id?: string;
   sku: string;
   name: string;
   brand: string;

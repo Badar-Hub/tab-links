@@ -20,7 +20,7 @@
       >
         <ProductCard
           @editAction="editProduct(product)"
-          @deleteAction="deleteProduct(product.id)"
+          @deleteAction="deleteProduct(product._id)"
           :product="product"
         />
       </div>
@@ -35,10 +35,11 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
-import ProductCard from "./ProductCard.vue";
-import NewProductModal from "./NewProductModal.vue";
-import ProductModel from "./ProductModel";
+import { ref, defineComponent, onMounted } from 'vue';
+import ProductCard from './ProductCard.vue';
+import NewProductModal from './NewProductModal.vue';
+import ProductModel from './ProductModel';
+import ProductService from './ProductService';
 
 export default defineComponent({
   components: {
@@ -49,30 +50,15 @@ export default defineComponent({
     const productModal = ref(false);
     const productRef = ref();
     const isEditing = ref(false);
-    const products = ref<ProductModel[]>([
-      {
-        id: "500",
-        sku: "sku",
-        name: "Hello",
-        price: 650,
-        discount: 650,
-        costPrice: 250,
-        brand: "World",
-        category: "Hello",
-        createdAt: "12-01-2020",
-      },
-      {
-        id: "500",
-        sku: "sku",
-        name: "Hello",
-        price: 650,
-        discount: 650,
-        costPrice: 250,
-        brand: "World",
-        category: "Hello",
-        createdAt: "12-01-2020",
-      },
-    ]);
+    const products = ref<ProductModel[]>([]);
+
+    const getProducts = async () => {
+      try {
+        products.value = await ProductService.getProducts();
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     const newProductAction = () => {
       isEditing.value = false;
@@ -91,9 +77,18 @@ export default defineComponent({
     };
 
     const refreshList = async () => {
-      console.log("reset-list");
+      console.log('reset-list');
+      getProducts();
       productModal.value = !productModal.value;
     };
+
+    onMounted(async () => {
+      try {
+        getProducts();
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
     return {
       products,
