@@ -22,6 +22,9 @@
             <h6 class="q-my-sm">Discount: {{ product.discount }}</h6>
           </div>
           <div class="col-xs-12">
+            <h6 class="q-my-sm">Quantity: {{ product.quantity }}</h6>
+          </div>
+          <div class="col-xs-12">
             <h6 class="q-my-sm">Created At: {{ product.createdAt }}</h6>
           </div>
         </div>
@@ -49,8 +52,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import ProductModel from "./ProductModel";
+import { defineComponent, PropType } from 'vue';
+import ProductModel from './ProductModel';
 
 export default defineComponent({
   props: {
@@ -58,7 +61,7 @@ export default defineComponent({
       type: Object as PropType<ProductModel>,
     },
   },
-  emits: ["editAction", "deleteAction"],
+  emits: ['editAction', 'deleteAction'],
   setup() {},
 });
 </script>

@@ -13,9 +13,20 @@ const Inventory = new mongoose.Schema({
 	reference: {
 		type: String,
 	},
-	products: {
-		type: Number,
-	},
+	products: [
+		{
+			name: {
+				type: String,
+			},
+			quantity: {
+				type: Number,
+			},
+			costPrice: {
+				type: Number,
+				default: 0
+			},
+		},
+	],
 	totalValue: {
 		type: Number,
 	},
@@ -24,4 +35,8 @@ const Inventory = new mongoose.Schema({
 	},
 });
 
-export const InventorySchema = mongoose.model('Inventory', Inventory, 'inventory');
+export const InventorySchema = mongoose.model(
+	'Inventory',
+	Inventory,
+	'inventory',
+);

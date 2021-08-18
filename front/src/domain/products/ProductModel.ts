@@ -7,5 +7,6 @@ export default interface ProductModel {
   price: number;
   discount: number;
   costPrice: number;
+  quantity: number;
   createdAt?: string;
 }

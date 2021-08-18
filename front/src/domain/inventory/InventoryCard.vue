@@ -16,6 +16,26 @@
         </div>
       </div>
     </q-card-section>
+    <q-card-section>
+      <div class="row">
+        <div class="col col-xs-12 col-sm-6 q-px-sm">
+          <q-btn
+            @click="$emit('editAction')"
+            label="Edit"
+            color="warning"
+            class="full-width"
+          />
+        </div>
+        <div class="col col-xs-12 col-sm-6 q-px-sm">
+          <q-btn
+            @click="$emit('deleteAction')"
+            label="Delete"
+            color="red"
+            class="full-width"
+          />
+        </div>
+      </div>
+    </q-card-section>
   </q-card>
 </template>
 
@@ -23,6 +43,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  emits: ['editAction', 'deleteAction'],
   props: {
     inventory: {
       type: Object,

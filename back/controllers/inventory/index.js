@@ -1,9 +1,9 @@
-import { getProducts } from './helpers/getProducts';
-import { newProduct } from './helpers/receiveProducts';
-import { updateProductInfo } from './helpers/updateProduct';
+import { inventoryList } from './helpers/getItems';
+import { receiveProduct } from './helpers/receiveProducts';
+import { updateRecevingInfo } from './helpers/updateReceving';
 
-export const products = {
-	getProducts,
-	newProduct,
-	updateProductInfo,
+export const inventory = {
+	inventoryList,
+	receiveProduct,
+	updateRecevingInfo
 };

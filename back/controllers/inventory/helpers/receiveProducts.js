@@ -1,17 +1,25 @@
 import { logger, sendSuccess, sendError } from '~/utils';
 import { InventorySchema } from '~/schemas/Inventory';
+import { ProductSchema } from '~/schemas/Product';
 
 export const receiveProduct = async (request, response) => {
 	try {
 		const { vendor, grNo, date, reference, products } = request.body;
 
-		// const { sku, brand, category, name, price, discount, costPrice } =
-		// 	request.body;
-
 		const checkGrNo = await InventorySchema.findOne({ grNo });
 		if (checkGrNo) {
 			throw new Error('Invalid Gr No');
 		}
+
+		products.forEach(async (product) => {
+			const { name, quantity } = product;
+			await ProductSchema.updateOne({
+				name,
+				$set: {
+					quantity,
+				},
+			});
+		});
 
 		const newInventoryData = new InventorySchema({
 			vendor,

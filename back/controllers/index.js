@@ -7,3 +7,4 @@ export * from './vendor';
 export * from './brands';
 export * from './categories';
 export * from './products';
+export * from './inventory';

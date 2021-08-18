@@ -125,6 +125,7 @@ export default defineComponent({
       category: '',
       price: 0,
       discount: 0,
+      quantity: 0,
       costPrice: 0,
     });
 
@@ -136,6 +137,7 @@ export default defineComponent({
       product.value.category = '';
       product.value.price = 0;
       product.value.discount = 0;
+      product.value.quantity = 0;
       product.value.costPrice = 0;
     };
 
@@ -147,6 +149,7 @@ export default defineComponent({
       product.value.category = productData.category;
       product.value.price = productData.price;
       product.value.discount = productData.discount;
+      product.value.quantity = productData.quantity;
       product.value.costPrice = productData.costPrice;
     };
 

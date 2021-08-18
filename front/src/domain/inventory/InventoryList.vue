@@ -17,16 +17,22 @@
       :key="i"
       class="col-xs-12 col-sm-4 q-pa-md"
     >
-      <InventoryCard :inventory="item" />
+      <InventoryCard @editAction="updateAction(item)" :inventory="item" />
     </div>
   </div>
-  <ReceiveProducts ref="inventoryRef" v-model="inventoryModal" />
+  <ReceiveProducts
+    @close="refreshList"
+    ref="inventoryRef"
+    v-model="inventoryModal"
+  />
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue';
+import { ref, defineComponent, onMounted } from 'vue';
 import InventoryCard from './InventoryCard.vue';
 import ReceiveProducts from './ReceiveProducts.vue';
+import InventoryService from './InventoryService';
+import InventoryModel from './InventoryModel';
 
 export default defineComponent({
   components: {
@@ -34,30 +40,46 @@ export default defineComponent({
     ReceiveProducts,
   },
   setup() {
-    const inventory = [
-      {
-        name: 'Printer 1',
-        price: 750,
-        discount: 600,
-        quantity: 50,
-      },
-      {
-        name: 'Printer 1',
-        price: 750,
-        discount: 600,
-        quantity: 50,
-      },
-    ];
+    const inventory = ref<InventoryModel[]>([]);
     const inventoryRef = ref();
     const inventoryModal = ref(false);
     const receiveProductAction = () => {
-      console.log(inventoryRef.value);
+      inventoryRef.value.resetForm();
       inventoryModal.value = true;
     };
+
+    const getInventoryItems = async () => {
+      try {
+        inventory.value = await InventoryService.getInventoryList();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const refreshList = () => {
+      getInventoryItems();
+      inventoryModal.value = false;
+    };
+
+    const updateAction = (item: InventoryModel) => {
+      inventoryRef.value.setToEdit(item);
+      inventoryModal.value = true
+    }
+
+    onMounted(async () => {
+      try {
+        getInventoryItems();
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
     return {
       inventory,
       inventoryModal,
+      inventoryRef,
+      refreshList,
+      updateAction,
       receiveProductAction,
     };
   },

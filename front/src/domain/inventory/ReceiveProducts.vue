@@ -3,20 +3,20 @@
     <q-form @submit="onSubmit">
       <div class="row">
         <div class="col-xs-12 col-sm-6 q-pa-sm">
-          <q-select :options="['Musa', 'Ilyas']" label="Select Vendor" filled />
+          <q-select v-model="receiveItems.vendor" :options="['Musa', 'Ilyas']" label="Select Vendor" filled />
         </div>
         <div class="col-xs-12 col-sm-6 q-pa-sm">
-          <q-input label="GR No" filled />
+          <q-input v-model="receiveItems.grNo" label="GR No" filled />
         </div>
         <div class="col-xs-12 col-sm-6 q-pa-sm">
-          <q-input label="Date" filled />
+          <q-input v-model="receiveItems.date" label="Date" filled />
         </div>
         <div class="col-xs-12 col-sm-6 q-pa-sm">
-          <q-input label="Reference" filled />
+          <q-input v-model="receiveItems.reference" label="Reference" filled />
         </div>
       </div>
       <q-card
-        v-for="(item, i) in receiveItems"
+        v-for="(item, i) in receiveItems.products"
         bordered
         flat
         class="q-my-sm"
@@ -43,14 +43,14 @@
               <q-select
                 v-model="item.name"
                 label="Select Product"
-                :options="['Hello', 'World']"
+                :options="products"
               />
             </div>
             <div class="col-xs-12 col-sm-6 q-px-sm">
               <q-input
                 label="Quantity"
                 type="number"
-                v-model="item.quantity"
+                v-model.number="item.quantity"
                 filled
               />
             </div>
@@ -73,22 +73,69 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue';
+import { ref, defineComponent, onMounted } from 'vue';
 import Modal from '@/components/General/Modal.vue';
+import InventoryModel from "./InventoryModel"
+import ProductService from "../products/ProductService"
+import ProductModel from "../products/ProductModel"
+import InventoryService from "./InventoryService"
 
 export default defineComponent({
   components: { Modal },
-  setup() {
-    const receiveItems = ref([
-      {
-        id: '',
-        name: '',
-        quantity: 0,
-      },
-    ]);
+  emits: ["close"],
+  setup(_, context) {
+    const receiveItems = ref<InventoryModel>({
+      vendor: '',
+      grNo: '',
+      date: '',
+      reference: '',
+      products: [
+        {
+          name: '',
+          quantity: 0,
+        },
+      ],
+    });
+    const products = ref<[]>([]) 
+
+  const resetForm = () => {
+    receiveItems.value = {
+       vendor: '',
+      grNo: '',
+      date: '',
+      reference: '',
+      products: [
+        {
+          name: '',
+          quantity: 0,
+        },
+      ],
+    }
+  }
+
+  const setToEdit = (item: InventoryModel) => {
+    receiveItems.value._id = item._id;
+    receiveItems.value.vendor = item.vendor
+    receiveItems.value.grNo = item.grNo
+    receiveItems.value.date = item.date
+    receiveItems.value.reference = item.reference
+    receiveItems.value.products = item.products
+  }
+
+  const onSubmit = async() => {
+    try {
+      await InventoryService.receiveProducts(receiveItems.value);
+      console.log("Successfully");
+      resetForm()
+      context.emit("close")
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
     const removeCurrentIndex = (index: Number) => {
-      receiveItems.value = receiveItems.value.filter((x, i) => i !== index);
+      receiveItems.value.products = receiveItems.value.products.filter((x, i) => i !== index);
     };
 
     const addNewItem = () => {
@@ -97,13 +144,29 @@ export default defineComponent({
         name: '',
         quantity: 0,
       };
-      receiveItems.value.push(newItem);
+      receiveItems.value.products.push(newItem);
     };
+
+    onMounted(async() => {
+      try {
+        const productsReq = await ProductService.getProducts()
+        products.value = productsReq.map((product: ProductModel) => product.name)
+        console.log(products.value);
+        
+      } catch (error) {
+        console.log(error);
+                
+      }
+    })
 
     return {
       addNewItem,
+      setToEdit,
+      resetForm,
       receiveItems,
+      products,
       removeCurrentIndex,
+      onSubmit
     };
   },
 });
