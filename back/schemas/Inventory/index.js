@@ -4,7 +4,7 @@ const Inventory = new mongoose.Schema({
 	vendor: {
 		type: String,
 	},
-	grNo: {
+	invoiceNo: {
 		type: String,
 	},
 	date: {
