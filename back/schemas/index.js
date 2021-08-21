@@ -5,4 +5,6 @@ export * from './Inventory';
 export * from './Accounts';
 export * from './Product';
 export * from './Vendor';
+export * from './Customer';
+export * from './Invoice';
 export * from './Otps';

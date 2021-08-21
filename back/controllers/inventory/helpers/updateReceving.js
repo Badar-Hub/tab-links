@@ -5,7 +5,7 @@ export const updateRecevingInfo = async (request, response) => {
 	try {
 		const { id } = request.params;
 
-		const { vendor, grNo, date, reference, products } = request.body;
+		const { vendor, invoiceNo, date, reference, products } = request.body;
 
 		const item = await InventorySchema.findById(id);
 		if (!item) {
@@ -23,7 +23,7 @@ export const updateRecevingInfo = async (request, response) => {
 			_id: id,
 			$set: {
 				vendor,
-				grNo,
+				invoiceNo,
 				date,
 				reference,
 				products,

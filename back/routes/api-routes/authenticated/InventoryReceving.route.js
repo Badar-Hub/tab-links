@@ -15,22 +15,22 @@ router.post(
 			next,
 			{
 				vendor: request.body.vendor,
-				grNo: request.body.grNo,
+				invoiceNo: request.body.invoiceNo,
 				reference: request.body.reference,
 				date: request.body.date,
 				products: request.body.products,
 			},
 			{
 				vendor: 'required|string',
-				grNo: 'required|string',
+				invoiceNo: 'required|string',
 				reference: 'required|string',
 				date: 'required|string',
 				products: 'required',
 			},
 		);
 	},
-	inventory.receiveProduct
-	);
+	inventory.receiveProduct,
+);
 
 router.put(
 	'/:id',
@@ -41,14 +41,14 @@ router.put(
 			next,
 			{
 				vendor: request.body.vendor,
-				grNo: request.body.grNo,
+				invoiceNo: request.body.invoiceNo,
 				reference: request.body.reference,
 				date: request.body.date,
 				products: request.body.products,
 			},
 			{
 				vendor: 'required|string',
-				grNo: 'required|string',
+				invoiceNo: 'required|string',
 				reference: 'required|string',
 				date: 'required|string',
 				products: 'required',

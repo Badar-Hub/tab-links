@@ -1,6 +1,7 @@
 import testRoutes from './test.route';
 import profileRoutes from './profile.route';
 import vendorRoutes from './vendor.route';
+import customerRoutes from './customer.route';
 import brandRoutes from './brand.route';
 import categoryRoutes from './category.route';
 import productRoutes from './product.route';
@@ -21,6 +22,10 @@ const authenticatedRoutes = [
 	{
 		path: '/vendors',
 		route: vendorRoutes,
+	},
+	{
+		path: '/customers',
+		route: customerRoutes,
 	},
 	{
 		path: '/brands',

@@ -20,7 +20,7 @@ router.post(
 			{
 				type: request.body.type,
 				name: request.body.name,
-				invoiceNo: request.body.paidValue,
+				invoiceNo: request.body.invoiceNo,
 				totalValue: request.body.totalValue,
 				paidValue: request.body.paidValue,
 			},
@@ -29,11 +29,35 @@ router.post(
 				name: 'required|string',
 				invoiceNo: 'required|integer',
 				totalValue: 'required|integer',
-				paidValue: 'required|integer',x
+				paidValue: 'required|integer',
 			},
 		);
 	},
 	invoices.paymentReceving,
+);
+
+router.post(
+	'/create-invoice',
+	(request, response, next) => {
+		validation(
+			request,
+			response,
+			next,
+			{
+				customerName: request.body.customerName,
+				date: request.body.date,
+				invoiceNo: request.body.invoiceNo,
+				products: request.body.products,
+			},
+			{
+				customerName: 'required|string',
+				date: 'required|string',
+				invoiceNo: 'required|integer',
+				products: 'required|integer',
+			},
+		);
+	},
+	invoices.createInvoice,
 );
 
 // router.put(

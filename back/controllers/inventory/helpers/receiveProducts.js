@@ -6,43 +6,24 @@ export const receiveProduct = async (request, response) => {
 	try {
 		const { vendor, invoiceNo, date, reference, products } = request.body;
 
-<<<<<<< Updated upstream
-		const checkGrNo = await InventorySchema.findOne({ grNo });
-=======
-		// const { sku, brand, category, name, price, discount, costPrice } =
-		// 	request.body;
-
-		const checkGrNo = await InventorySchema.findOne({ invoiceNo });
->>>>>>> Stashed changes
-		if (checkGrNo) {
-			throw new Error('Invalid Gr No');
+		const checkInvoiceNo = await InventorySchema.findOne({ invoiceNo });
+		if (checkInvoiceNo) {
+			throw new Error('Invalid Invoice No');
 		}
 
-<<<<<<< Updated upstream
-		products.forEach(async (product) => {
-			const { name, quantity } = product;
-			await ProductSchema.updateOne({
-				name,
-				$set: {
-					quantity,
+		products.forEach(async (element) => {
+			const { name, quantity } = element;
+			const product = await ProductSchema.findOne({ name });
+			await ProductSchema.updateOne(
+				{ name },
+				{
+					$set: {
+						quantity: product.quantity + quantity,
+					},
 				},
-			});
+			);
 		});
 
-=======
-		products.forEach(async(element) => {
-			const {name, quantity} = element
-			await ProductSchema.updateOne({name, $set: {
-				quantity
-			}})
-		});
-
-		User.update({"created": false}, {"$set":{"created": true}}, {"multi": true}, (err, writeResult) => {
-
-		});
-
-
->>>>>>> Stashed changes
 		const newInventoryData = new InventorySchema({
 			vendor,
 			invoiceNo,

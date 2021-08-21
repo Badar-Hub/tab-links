@@ -12,6 +12,7 @@
 
       <q-tabs align="left">
         <q-route-tab to="/vendors" label="Vendors" />
+        <q-route-tab to="/customers" label="Customers" />
         <q-route-tab to="/brands" label="Brands" />
         <q-route-tab to="/categories" label="Categories" />
         <q-route-tab to="/products" label="Products" />

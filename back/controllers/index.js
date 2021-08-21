@@ -4,6 +4,7 @@ export * from './test';
 export * from './auth';
 export * from './profile';
 export * from './vendor';
+export * from './customer';
 export * from './brands';
 export * from './accounts';
 export * from './categories';

@@ -13,6 +13,11 @@ const routes = [
     component: () => import("../domain/vendors/VendorList.vue"),
   },
   {
+    path: "/customers",
+    name: "Customers",
+    component: () => import("../domain/customers/CustomerList.vue"),
+  },
+  {
     path: "/brands",
     name: "Brands",
     component: () => import("../domain/brands/BrandList.vue"),
@@ -31,6 +36,18 @@ const routes = [
     path: "/inventory",
     name: "Inventory",
     component: () => import("../domain/inventory/InventoryList.vue"),
+  },
+  {
+    path: "/accounts",
+    name: "Accounts",
+    component: () => import("../domain/accounts/invoiceList.vue"),
+    children: [
+      {
+        path: "customer/:id",
+        name: "Customer Records",
+        component: () => import("../domain/accounts/customer/customerRecord.vue")
+      }
+    ]
   },
 ];
 

@@ -1,5 +1,6 @@
 export default interface ProductModel {
     id?: string;
     name: string;
-    quantity: number
+    quantity: number;
+    costPrice: number;
 }
