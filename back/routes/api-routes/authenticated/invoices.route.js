@@ -10,6 +10,10 @@ router.get('/paid-invoices', invoices.getPaidInvoices);
 
 router.get('/unpaid-invoices', invoices.getUnPaidInvoices);
 
+router.get('/invoices/:id', invoices.getInvoice);
+
+router.get('/invoices', invoices.getInvoices);
+
 router.post(
 	'/',
 	(request, response, next) => {
@@ -48,46 +52,17 @@ router.post(
 				date: request.body.date,
 				invoiceNo: request.body.invoiceNo,
 				products: request.body.products,
+				totalValue: request.body.totalValue,
 			},
 			{
 				customerName: 'required|string',
 				date: 'required|string',
 				invoiceNo: 'required|integer',
-				products: 'required|integer',
+				products: 'required',
+				totalValue: 'required|integer',
 			},
 		);
 	},
 	invoices.createInvoice,
 );
-
-// router.put(
-// 	'/:id',
-// 	(request, response, next) => {
-// 		validation(
-// 			request,
-// 			response,
-// 			next,
-// 			{
-// 				sku: request.body.sku,
-// 				name: request.body.name,
-// 				brand: request.body.brand,
-// 				category: request.body.category,
-// 				price: request.body.price,
-// 				discount: request.body.discount,
-// 				costPrice: request.body.costPrice,
-// 			},
-// 			{
-// 				sku: 'required|string',
-// 				name: 'required|string',
-// 				brand: 'required|string',
-// 				category: 'required|string',
-// 				price: 'required|integer',
-// 				discount: 'required|integer',
-// 				costPrice: 'required|integer',
-// 			},
-// 		);
-// 	},
-// 	products.updateProductInfo,
-// );
-
 module.exports = router;

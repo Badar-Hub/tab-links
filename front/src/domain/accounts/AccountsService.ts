@@ -16,6 +16,28 @@ export default class AccountsService {
     }
   }
 
+  static async getInvoice(name: string) {
+    try {
+      const data = await ApiService.get(
+        `${AccountsService.baseUrl}/invoices/${name}`
+      );
+      return data.results.data.filteredInvoice;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async getInvoices() {
+    try {
+      const data = await ApiService.get(
+        `${AccountsService.baseUrl}/invoices`
+      );
+      return data.results.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   static async newPaymentReceving(paymentReceving: InvoiceModel) {
     try {
       const data = await ApiService.post(
@@ -30,7 +52,7 @@ export default class AccountsService {
 
   static async newInvoice(invoice: NewInvoiceModel) {
     try {
-      const data = await ApiService.post(`${AccountsService.baseUrl}`, invoice);
+      const data = await ApiService.post(`${AccountsService.baseUrl}/create-invoice`, invoice);
       return data.data;
     } catch (error) {
       console.log(error);

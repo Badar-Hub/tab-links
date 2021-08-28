@@ -8,6 +8,11 @@ const routes = [
     component: Home,
   },
   {
+    path: "/create",
+    name: "Create",
+    component: () => import('../views/Create.vue')
+  },
+  {
     path: "/vendors",
     name: "Vendors",
     component: () => import("../domain/vendors/VendorList.vue"),
@@ -41,14 +46,25 @@ const routes = [
     path: "/accounts",
     name: "Accounts",
     component: () => import("../domain/accounts/invoiceList.vue"),
+  },
+  {
+    path: "/records",
+    name: "Customer Records",
+    component: () => import("../views/Records.vue"),
     children: [
       {
-        path: "customer/:id",
+        path: ':id',
         name: "Customer Records",
-        component: () => import("../domain/accounts/customer/customerRecord.vue")
+        component: () => import("../domain/accounts/customer/customerRecord.vue"),
       }
     ]
   },
+  {
+    path: "/invoice",
+    name: "Invoice",
+    component: () => import("../domain/accounts/invoices/newInvoice.vue"),
+  }
+
 ];
 
 const router = createRouter({

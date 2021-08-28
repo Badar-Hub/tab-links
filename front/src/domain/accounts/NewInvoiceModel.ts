@@ -5,5 +5,6 @@ export default interface NewInvoiceModel {
     date: string;
     reference?: string;
     products: Array<any>;
-    createdAt: string;
+    totalValue: number;
+    createdAt?: string;
 }

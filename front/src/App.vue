@@ -1,26 +1,24 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="bg-primary text-white" height-hint="98">
+    <q-header elevated class="text-white" height-hint="98">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          Tab Links
+          <router-link class="no-underline" to="/">
+            <div class="row">
+              <q-avatar>
+                <img src="@/assets/logo.png" />
+              </q-avatar>
+              <h6 class="q-my-xs cl-white">
+                Tech Origin
+              </h6>
+            </div>
+          </router-link>
         </q-toolbar-title>
       </q-toolbar>
-
-      <q-tabs align="left">
-        <q-route-tab to="/vendors" label="Vendors" />
-        <q-route-tab to="/customers" label="Customers" />
-        <q-route-tab to="/brands" label="Brands" />
-        <q-route-tab to="/categories" label="Categories" />
-        <q-route-tab to="/products" label="Products" />
-        <q-route-tab to="/inventory" label="Inventory" />
-        <q-route-tab to="/accounts" label="Accounts" />
-      </q-tabs>
     </q-header>
-    <q-page-container>
+
+    <Sidebar v-model="leftDrawerOpen" />
+    <q-page-container class="q-mx-md">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -28,8 +26,10 @@
 
 <script>
 import { ref } from 'vue';
+import Sidebar from './components/Layout/Sidebar.vue';
 
 export default {
+  components: { Sidebar },
   name: 'App',
 
   setup() {
@@ -39,3 +39,19 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+.no-underline {
+  text-decoration: none;
+}
+header {
+  background-color: #1d1b1b !important;
+}
+.cl {
+  &-white {
+    color: white;
+  }
+  &-black {
+    color: black;
+  }
+}
+</style>

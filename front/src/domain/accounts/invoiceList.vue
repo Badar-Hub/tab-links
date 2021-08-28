@@ -26,7 +26,7 @@
       <div v-if="selectType === 'vendor'">
         <div class="row q-ma-md">
           <div
-            class="col-xs-12 col-sm-4 q-px-sm"
+            class="col-xs-12 col-sm-4 q-pa-sm"
             v-for="(vendor, index) in vendors"
             :key="index"
           >
@@ -65,7 +65,7 @@
       <div v-else-if="selectType === 'customer'">
         <div class="row q-ma-md">
           <div
-            class="col-xs-12 col-sm-4 q-px-sm"
+            class="col-xs-12 col-sm-4 q-pa-sm"
             v-for="(customer, index) in customers"
             :key="index"
           >
@@ -81,18 +81,20 @@
                   <div class="col-xs-12 q-my-sm">
                     <hr />
                   </div>
-                  <div class="col-xs-12 col-sm-6 q-px-sm">
+                  <div class="col-xs-12 col-sm-6 q-px-sm q-pa-sm">
                     <q-btn
-                      class="q-px-sm q-mx-auto"
+                      class="q-px-sm q-mx-auto full-width"
                       color="primary"
                       label="View invoices"
+                      :to="`/records/${customer.name}`"
                     />
                   </div>
-                  <div class="col-xs-12 col-sm-6 q-px-sm">
+                  <div class="col-xs-12 col-sm-6 q-px-sm q-my-sm">
                     <q-btn
-                      class="q-px-sm q-mx-auto"
+                      class="q-px-sm q-mx-auto full-width"
                       color="primary"
-                      label="Receive Payment"
+                      label="Receive Bulk Payment"
+                      @click="receiveBulkPaymentAction(customer.name)"
                     />
                   </div>
                 </div>
@@ -101,13 +103,6 @@
           </div>
         </div>
       </div>
-      <!-- <div
-        v-for="(invoice, i) in invoices"
-        :key="i"
-        class="col-xs-12 col-sm-4 q-pa-md"
-      >
-        <InvoiceCard @editAction="updatePayment(invoice)" :invoice="invoice" />
-      </div> -->
     </div>
     <div v-else>
       <q-select
@@ -118,6 +113,11 @@
       />
     </div>
     <ReceivePayment ref="invoiceRef" v-model="paymentRecevingModal" />
+    <ReceiveBulkPayment
+      :name="selectedCustomer"
+      ref="bulkPaymentModalRef"
+      v-model="receiveBulkPaymentDialog"
+    />
   </div>
 </template>
 
@@ -129,14 +129,13 @@ import InventoryModel from '../inventory/InventoryModel';
 import InventoryService from '../inventory/InventoryService';
 import VendorModel from '../vendors/VendorModel';
 import VendorService from '../vendors/VendorService';
-// import InvoiceCard from './invoiceCard.vue';
-// import InvoiceModel from './InvoiceModel';
 import ReceivePayment from './ReceivePayment.vue';
+import ReceiveBulkPayment from './receivePayment/receiveBulkPayment.vue';
 
 export default defineComponent({
   components: {
-    // InvoiceCard,
     ReceivePayment,
+    ReceiveBulkPayment,
   },
   setup() {
     const invoices = ref<InventoryModel[]>([]);
@@ -145,6 +144,14 @@ export default defineComponent({
     const filterName = ref<String>('');
     const vendors = ref<VendorModel[]>([]);
     const customers = ref<CustomerModel[]>([]);
+    const receiveBulkPaymentDialog = ref(false);
+    const bulkPaymentModalRef = ref();
+    const selectedCustomer = ref('');
+
+    const receiveBulkPaymentAction = (name: string) => {
+      selectedCustomer.value = name;
+      receiveBulkPaymentDialog.value = !receiveBulkPaymentDialog.value;
+    };
 
     const paymentRecevingModal = ref(false);
     const receivePaymentAction = () => {
@@ -183,15 +190,19 @@ export default defineComponent({
     });
 
     return {
-      invoices,
-      invoiceRef,
-      updatePayment,
-      paymentRecevingModal,
-      receivePaymentAction,
-      selectType,
-      filterName,
       vendors,
+      invoices,
       customers,
+      invoiceRef,
+      filterName,
+      selectType,
+      updatePayment,
+      selectedCustomer,
+      bulkPaymentModalRef,
+      receivePaymentAction,
+      paymentRecevingModal,
+      receiveBulkPaymentAction,
+      receiveBulkPaymentDialog,
     };
   },
 });

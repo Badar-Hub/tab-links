@@ -1,4 +1,4 @@
-export default interface CustomerModal {
+export default interface CustomerModel {
   _id?: string;
   name: string;
   phone: string;

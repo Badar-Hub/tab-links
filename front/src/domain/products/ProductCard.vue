@@ -24,12 +24,9 @@
           <div class="col-xs-12">
             <h6 class="q-my-sm">Quantity: {{ product.quantity }}</h6>
           </div>
-          <div class="col-xs-12">
-            <h6 class="q-my-sm">Created At: {{ product.createdAt }}</h6>
-          </div>
         </div>
         <div class="row">
-          <div class="col-xs-12 col-sm-6 q-px-sm text-left">
+          <div class="col-xs-12 col-sm-6 q-px-sm text-left q-my-sm">
             <q-btn
               @click="$emit('editAction')"
               label="Edit"
@@ -37,7 +34,7 @@
               class="full-width"
             />
           </div>
-          <div class="col-xs-12 col-sm-6 q-px-sm text-right">
+          <div class="col-xs-12 col-sm-6 q-px-sm text-right q-my-sm">
             <q-btn
               @click="$emit('deleteAction')"
               label="Delete"

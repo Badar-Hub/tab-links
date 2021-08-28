@@ -1,27 +1,25 @@
 import { logger, sendSuccess, sendError } from '~/utils';
 import { InvoiceSchema } from '~/schemas/Invoice';
-import { ProductSchema } from '~/schemas/Product';
+import { CustomerSchema } from '~/schemas/Customer';
 
 export const createInvoice = async (request, response) => {
-	const { customerName, invoiceNo, date, reference, products } = request.body;
+	const { customerName, date, reference, products, invoiceNo, totalValue } =
+		request.body;
 	try {
 		const invoice = await InvoiceSchema.findOne({ invoiceNo });
 
-		if (!invoice) {
+		if (invoice) {
 			throw new Error('Invalid request');
 		}
 
-		const totalValues = [];
-
-		products.forEach(async (element) => {
-			const { name, quantity } = element;
-			try {
-				const product = await ProductSchema.findOne({ name });
-				totalValues.push(product.price * quantity);
-			} catch (error) {
-				console.log(error);
-			}
-		});
+		await CustomerSchema.updateOne(
+			{ name: customerName },
+			{
+				$inc: {
+					balance: totalValue,
+				},
+			},
+		);
 
 		const newInvoice = new InvoiceSchema({
 			customerName,
@@ -29,7 +27,7 @@ export const createInvoice = async (request, response) => {
 			date,
 			reference,
 			products,
-			totalValue: totalValues.reduce((a, b) => a + b),
+			totalValue,
 		});
 
 		await newInvoice.save();

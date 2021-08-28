@@ -1,10 +1,10 @@
 <template>
   <div class="q-pa-md">
     <div class="row">
-      <div class="col-xs-12 col-sm-6 text-left">
+      <div class="col-xs-6 text-left">
         <h5 class="q-my-sm">Product List</h5>
       </div>
-      <div class="col-xs-12 col-sm-6 text-right">
+      <div class="col-xs-6 text-right">
         <q-btn
           @click="newProductAction"
           label="Add New Product"
