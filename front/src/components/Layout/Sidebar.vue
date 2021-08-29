@@ -39,6 +39,11 @@
           <h6 class="q-my-sm cl-white">Accounts</h6>
         </div>
       </router-link>
+      <router-link class="button" to="/inventory">
+        <div class="row q-px-xl q-my-sm button">
+          <h6 class="q-my-sm cl-white">Receive Inventory</h6>
+        </div>
+      </router-link>
     </q-drawer>
   </div>
 </template>
@@ -64,6 +69,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.router-link-active{
+  .button {
+  background-color: crimson;
+  }
+}
+.router-link-exact-active {
+  .button {
+  background-color: crimson;
+  }
+}
 .sidebar {
   .button {
     cursor: pointer;

@@ -9,6 +9,7 @@
 	"author": "Abdulmoiz Ahmer",
 	"license": "MIT",
 	"scripts": {
+		"server-pm": "babel-node ./index.js",
 		"server": "nodemon --exec babel-node index.js",
 		"seed": "npx babel-node database/seeders.js",
 		"format": "prettier --write \"./**/*.js\"",

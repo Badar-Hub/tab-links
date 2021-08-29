@@ -1,4 +1,4 @@
-.sidebar .button{cursor:pointer;text-decoration:none}.sidebar .button:hover{background-color:#dc143c}.sidebar .q-drawer{background-color:#1d1b1b}.sidebar .logo{max-width:230px;width:100%}.no-underline{text-decoration:none}header{background-color:#1d1b1b!important}.cl-white{color:#fff}.cl-black{color:#000}
+.router-link-active .button,.router-link-exact-active .button{background-color:#dc143c}.sidebar .button{cursor:pointer;text-decoration:none}.sidebar .button:hover{background-color:#dc143c}.sidebar .q-drawer{background-color:#1d1b1b}.sidebar .logo{max-width:230px;width:100%}.no-underline{text-decoration:none}header{background-color:#1d1b1b!important}.cl-white{color:#fff}.cl-black{color:#000}
 /*!
  * * Quasar Framework v2.0.4
  * * (c) 2015-present Razvan Stoenescu

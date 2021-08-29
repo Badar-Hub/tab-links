@@ -15,6 +15,7 @@
           </router-link>
         </q-toolbar-title>
       </q-toolbar>
+      <q-btn @click="leftDrawerOpen = !leftDrawerOpen" icon="menu" size="14px" />
     </q-header>
 
     <Sidebar v-model="leftDrawerOpen" />

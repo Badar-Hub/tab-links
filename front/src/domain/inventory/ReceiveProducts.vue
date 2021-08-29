@@ -11,7 +11,7 @@
           />
         </div>
         <div class="col-xs-12 col-sm-6 q-pa-sm">
-          <q-input v-model="receiveItems.invoiceNo" label="Invoice No" filled />
+          <q-input disable v-model="receiveItems.invoiceNo" label="Invoice No" filled />
         </div>
         <div class="col-xs-12 col-sm-6 q-pa-sm">
           <q-input
@@ -152,6 +152,15 @@ export default defineComponent({
       };
     };
 
+    const generateInvoiceNo = async () => {
+      try {
+        const data = await InventoryService.getInventoryList();
+        receiveItems.value.invoiceNo = data.length
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
     const setToEdit = (item: InventoryModel) => {
       receiveItems.value._id = item._id;
       receiveItems.value.vendor = item.vendor;
@@ -190,6 +199,7 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
+        generateInvoiceNo()
         const productsReq = await ProductService.getProducts();
         products.value = productsReq.map(
           (product: ProductModel) => product.name
