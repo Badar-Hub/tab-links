@@ -10,11 +10,12 @@ import routes from '~/routes';
 
 dotenv.config();
 
-const port = process.env.PORT ?? 4000;
+const port = process.env.PORT ?? 6000;
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(routes);
+app.use("/", express.static(__dirname + "/dist"));
 
 console.log(process.env.CONNECTION_STRING_MONGO);
 

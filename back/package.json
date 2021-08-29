@@ -13,7 +13,8 @@
 		"seed": "npx babel-node database/seeders.js",
 		"format": "prettier --write \"./**/*.js\"",
 		"lint": "eslint \"./**/*.js\"",
-		"test": "mocha --timeout 10000"
+		"test": "mocha --timeout 10000",
+		"build": "rm -r dist && git pull &&  cd ../front && yarn build && mv dist ../back"
 	},
 	"dependencies": {
 		"@sendgrid/mail": "^7.4.4",
