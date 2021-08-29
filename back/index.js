@@ -17,7 +17,7 @@ app.use(cors());
 app.use(routes);
 app.use("/", express.static(__dirname + "/dist"));
 
-console.log(process.env.CONNECTION_STRING_MONGO);
+app.use('/', express.static(__dirname + '/dist'));
 
 if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'staging') {
 	// eslint-disable-next-line global-require

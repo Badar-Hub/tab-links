@@ -2,7 +2,7 @@ import _axios from "axios";
 
 export class ApiService {
   private static axios = _axios.create({
-    baseURL: "http://localhost:4000/api/v1/",
+    baseURL: "https://tab-links.cf/api/v1/",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
       "x-api-key": "1221",

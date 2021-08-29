@@ -29,6 +29,7 @@ export const auth = async (request, response, next) => {
 			complete: true,
 		});
 
+
 		//	Making sure token is not expired
 		if (new Date(payLoad.exp * 1000) < new Date(Date.now()))
 			return sendMessage('Token Expired', response, PRE_CONDITION_FAILED);
