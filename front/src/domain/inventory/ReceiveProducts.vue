@@ -197,9 +197,10 @@ export default defineComponent({
       receiveItems.value.products.push(newItem);
     };
 
+    generateInvoiceNo()
+
     onMounted(async () => {
       try {
-        generateInvoiceNo()
         const productsReq = await ProductService.getProducts();
         products.value = productsReq.map(
           (product: ProductModel) => product.name
