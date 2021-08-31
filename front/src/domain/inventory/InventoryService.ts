@@ -4,6 +4,15 @@ import InventoryModel from './InventoryModel';
 export default class InventoryService {
   static baseUrl = "inventory";
 
+  static async getItem(id: string) {
+    try {
+      const data = await ApiService.get(`${InventoryService.baseUrl}/${id}`);
+      return data.results.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   static async getInventoryList() {
     try {
       const data = await ApiService.get(InventoryService.baseUrl);

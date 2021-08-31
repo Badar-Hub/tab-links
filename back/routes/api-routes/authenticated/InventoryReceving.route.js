@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get('/', inventory.inventoryList);
 
+router.get('/:id', inventory.getItem);
+
 router.post(
 	'/',
 	(request, response, next) => {

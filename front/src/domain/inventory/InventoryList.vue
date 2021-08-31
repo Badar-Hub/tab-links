@@ -18,41 +18,56 @@
         :key="i"
         class="col-xs-12 col-sm-4 q-pa-md"
       >
-        <InventoryCard @editAction="updateAction(item)" :inventory="item" />
+        <InventoryCard @editAction="updateAction(item._id)" :inventory="item" />
       </div>
     </div>
-    <ReceiveProducts
-      @close="refreshList"
+    <Modal
       ref="inventoryRef"
       v-model="inventoryModal"
-    />
+      width="700px"
+      title="Receive Prodducts"
+    >
+      <ReceiveProducts
+        ref="inventoryRef2"
+        @close="refreshList"
+        v-model="inventoryModal"
+        :invoiceNo="invoiceNo"
+        :prodId="prodId"
+      />
+    </Modal>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted } from 'vue';
+import { ref, defineComponent, onMounted, watch } from 'vue';
 import InventoryCard from './InventoryCard.vue';
 import ReceiveProducts from './ReceiveProducts.vue';
 import InventoryService from './InventoryService';
 import InventoryModel from './InventoryModel';
+import Modal from '../../components/General/Modal.vue';
 
 export default defineComponent({
   components: {
     InventoryCard,
     ReceiveProducts,
+    Modal,
   },
   setup() {
     const inventory = ref<InventoryModel[]>([]);
     const inventoryRef = ref();
+    const inventoryRef2 = ref();
     const inventoryModal = ref(false);
+    const invoiceNo = ref(0);
+    const prodId = ref('');
     const receiveProductAction = () => {
-      inventoryRef.value.resetForm();
+      // inventoryRef.value.resetForm();
       inventoryModal.value = true;
     };
 
     const getInventoryItems = async () => {
       try {
         inventory.value = await InventoryService.getInventoryList();
+        invoiceNo.value = inventory.value.length;
       } catch (error) {
         console.log(error);
       }
@@ -63,10 +78,17 @@ export default defineComponent({
       inventoryModal.value = false;
     };
 
-    const updateAction = (item: InventoryModel) => {
-      inventoryRef.value.setToEdit(item);
+    const updateAction = (item: string) => {
       inventoryModal.value = true;
+      console.log(inventoryRef2.value);
+      // inventoryRef.value.setToEdit(item);
+      prodId.value = item;
     };
+
+    watch(
+      () => inventoryModal.value,
+      () => console.log(inventoryRef2.value)
+    );
 
     onMounted(async () => {
       try {
@@ -80,6 +102,9 @@ export default defineComponent({
       inventory,
       inventoryModal,
       inventoryRef,
+      inventoryRef2,
+      invoiceNo,
+      prodId,
       refreshList,
       updateAction,
       receiveProductAction,
