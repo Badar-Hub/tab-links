@@ -210,6 +210,8 @@ export default defineComponent({
       receiveItems.value.products.push(newItem);
     };
 
+    generateInvoiceNo()
+
     onMounted(async () => {
       console.log('HELLLO');
       await generateInvoiceNo();
