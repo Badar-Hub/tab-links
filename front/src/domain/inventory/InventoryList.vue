@@ -1,30 +1,32 @@
 <template>
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 q-pa-md">
-      <h5 class="q-my-sm">Inventory List</h5>
+  <div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 q-pa-md">
+        <h5 class="q-my-sm">Inventory List</h5>
+      </div>
+      <div class="col-xs-12 col-sm-6 q-pa-md text-right">
+        <q-btn
+          label="Receive Product"
+          color="primary"
+          @click="receiveProductAction"
+        />
+      </div>
     </div>
-    <div class="col-xs-12 col-sm-6 q-pa-md text-right">
-      <q-btn
-        label="Receive Product"
-        color="primary"
-        @click="receiveProductAction"
-      />
+    <div class="row">
+      <div
+        v-for="(item, i) in inventory"
+        :key="i"
+        class="col-xs-12 col-sm-4 q-pa-md"
+      >
+        <InventoryCard @editAction="updateAction(item)" :inventory="item" />
+      </div>
     </div>
+    <ReceiveProducts
+      @close="refreshList"
+      ref="inventoryRef"
+      v-model="inventoryModal"
+    />
   </div>
-  <div class="row">
-    <div
-      v-for="(item, i) in inventory"
-      :key="i"
-      class="col-xs-12 col-sm-4 q-pa-md"
-    >
-      <InventoryCard @editAction="updateAction(item)" :inventory="item" />
-    </div>
-  </div>
-  <ReceiveProducts
-    @close="refreshList"
-    ref="inventoryRef"
-    v-model="inventoryModal"
-  />
 </template>
 
 <script lang="ts">
@@ -63,8 +65,8 @@ export default defineComponent({
 
     const updateAction = (item: InventoryModel) => {
       inventoryRef.value.setToEdit(item);
-      inventoryModal.value = true
-    }
+      inventoryModal.value = true;
+    };
 
     onMounted(async () => {
       try {
