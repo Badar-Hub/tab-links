@@ -5,7 +5,7 @@ const Inventory = new mongoose.Schema({
 		type: String,
 	},
 	invoiceNo: {
-		type: String,
+		type: Number,
 	},
 	date: {
 		type: String,
@@ -23,7 +23,7 @@ const Inventory = new mongoose.Schema({
 			},
 			costPrice: {
 				type: Number,
-				default: 0
+				default: 0,
 			},
 		},
 	],

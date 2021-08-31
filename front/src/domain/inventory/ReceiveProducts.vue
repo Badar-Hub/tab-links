@@ -11,7 +11,12 @@
           />
         </div>
         <div class="col-xs-12 col-sm-6 q-pa-sm">
-          <q-input disable v-model="receiveItems.invoiceNo" label="Invoice No" filled />
+          <q-input
+            disable
+            v-model="receiveItems.invoiceNo"
+            label="Invoice No"
+            filled
+          />
         </div>
         <div class="col-xs-12 col-sm-6 q-pa-sm">
           <q-input
@@ -122,7 +127,7 @@ export default defineComponent({
   setup(_, context) {
     const receiveItems = ref<InventoryModel>({
       vendor: '',
-      invoiceNo: '',
+      invoiceNo: 0,
       date: '2021/02/01',
       reference: '',
       products: [
@@ -139,7 +144,7 @@ export default defineComponent({
     const resetForm = () => {
       receiveItems.value = {
         vendor: '',
-        invoiceNo: '',
+        invoiceNo: 0,
         date: '2021/02/01',
         reference: '',
         products: [
@@ -152,12 +157,13 @@ export default defineComponent({
       };
     };
 
-    const generateInvoiceNo = async () => {
+    async function generateInvoiceNo() {
       try {
         const data = await InventoryService.getInventoryList();
-        receiveItems.value.invoiceNo = data.length
-      } catch(error) {
-        console.log(error)
+        console.log(data);
+        receiveItems.value.invoiceNo = data.length;
+      } catch (error) {
+        console.log(error);
       }
     }
 
@@ -201,6 +207,9 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
+        generateInvoiceNo();
+        console.log(generateInvoiceNo);
+
         const productsReq = await ProductService.getProducts();
         products.value = productsReq.map(
           (product: ProductModel) => product.name
