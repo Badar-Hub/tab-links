@@ -105,8 +105,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted, watch, toRefs } from 'vue';
-// import Modal from '@/components/General/Modal.vue';
+import { ref, defineComponent, onMounted } from 'vue';
 import InventoryModel from './InventoryModel';
 import ProductService from '../products/ProductService';
 import ProductModel from '../products/ProductModel';
@@ -115,15 +114,8 @@ import VendorService from '../vendors/VendorService';
 import VendorModel from '../vendors/VendorModel';
 
 export default defineComponent({
-  // components: { Modal },
   emits: ['close'],
-  props: {
-    invoiceNo: {
-      type: Number,
-      default: 0,
-    },
-  },
-  setup(props, context) {
+  setup(_, context) {
     const receiveItems = ref<InventoryModel>({
       vendor: '',
       invoiceNo: 0,
@@ -155,13 +147,13 @@ export default defineComponent({
           },
         ],
       };
+      generateInvoiceNo();
     };
 
     async function generateInvoiceNo() {
       try {
         const data = await InventoryService.getInventoryList();
         receiveItems.value.invoiceNo = data.length;
-        console.log(receiveItems.value);
       } catch (error) {
         console.log(error);
       }
@@ -179,7 +171,6 @@ export default defineComponent({
     const onSubmit = async () => {
       try {
         await InventoryService.receiveProducts(receiveItems.value);
-        console.log('Successfully');
         resetForm();
         context.emit('close');
       } catch (error) {
@@ -193,13 +184,6 @@ export default defineComponent({
       );
     };
 
-    const inv = toRefs(props).invoiceNo;
-
-    watch(
-      () => inv.value,
-      () => (receiveItems.value.invoiceNo = inv.value)
-    );
-
     const addNewItem = () => {
       const newItem = {
         id: '',
@@ -210,15 +194,9 @@ export default defineComponent({
       receiveItems.value.products.push(newItem);
     };
 
-    generateInvoiceNo()
-
     onMounted(async () => {
-      console.log('HELLLO');
-      await generateInvoiceNo();
-
       try {
-        await generateInvoiceNo();
-
+        generateInvoiceNo();
         const productsReq = await ProductService.getProducts();
         products.value = productsReq.map(
           (product: ProductModel) => product.name

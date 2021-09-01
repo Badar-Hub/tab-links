@@ -3,16 +3,16 @@
     <q-card-section>
       <div class="row">
         <div class="col-xs-12">
-          <h6 class="q-my-sm">Name: {{ inventory.name }}</h6>
+          <p class="text-body2 q-my-none">Vendor Name</p>
         </div>
         <div class="col-xs-12">
-          <h6 class="q-my-sm">Price: {{ inventory.price }}</h6>
+          <p class="text-h6 q-my-sm">{{ inventory.vendor }}</p>
         </div>
         <div class="col-xs-12">
-          <h6 class="q-my-sm">Discount: {{ inventory.discount }}</h6>
+          <p class="text-body2 q-my-none">Total Value</p>
         </div>
         <div class="col-xs-12">
-          <h6 class="q-my-sm">Quantity: {{ inventory.quantity }}</h6>
+          <p class="text-h6 q-my-sm">Rs. {{ totalValue }}</p>
         </div>
       </div>
     </q-card-section>
@@ -40,14 +40,41 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { ref, defineComponent, onMounted, PropType, toRefs } from 'vue';
+import InventoryModel from './InventoryModel';
 
 export default defineComponent({
   emits: ['editAction', 'deleteAction'],
   props: {
     inventory: {
-      type: Object,
+      type: Object as PropType<InventoryModel>,
     },
+  },
+  setup(props) {
+    const gr = ref<InventoryModel>({
+      _id: '',
+      vendor: '',
+      invoiceNo: 0,
+      date: '',
+      reference: '',
+      products: [],
+    });
+
+    const propsReactivity = toRefs(props);
+    const totalValue = ref(0);
+
+    totalValue.value = propsReactivity.inventory
+      .value!.products.map((product) => product.costPrice * product.quantity)
+      .reduce((a: number, b: number) => a + b);
+
+    onMounted(() => {
+      propsReactivity.inventory.value = gr.value;
+      console.log(propsReactivity.inventory.value, gr.value);
+    });
+
+    return {
+      totalValue,
+    };
   },
 });
 </script>
