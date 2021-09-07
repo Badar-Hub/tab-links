@@ -1,7 +1,7 @@
 import { logger, sendSuccess, sendError } from '~/utils';
 import { InventorySchema } from '~/schemas/Inventory';
 import { ProductSchema } from '~/schemas/Product';
-import { VendorSchema } from '~/schemas/Accounts';
+import { VendorSchema } from 'schemas/Vendor';
 
 export const receiveProduct = async (request, response) => {
 	try {
@@ -12,24 +12,12 @@ export const receiveProduct = async (request, response) => {
 			throw new Error('Invalid Invoice No');
 		}
 
-		const checkVendor = await VendorSchema.findOne({
-			name: vendor,
-		});
-
-		if (!checkVendor) {
-			throw new Error('Vendor Not Found');
-		}
-
-		const totalPriceArr = [];
+		const total = []
 
 		products.forEach(async (element) => {
-			const { name, quantity } = element;
+			const { name, quantity, costPrice } = element;
+			total.push((quantity * costPrice))
 			const product = await ProductSchema.findOne({ name });
-			totalPriceArr.push(
-				product.discount
-					? product.discount * quantity
-					: product.price * quantity,
-			);
 			await ProductSchema.updateOne(
 				{ name },
 				{
@@ -40,23 +28,21 @@ export const receiveProduct = async (request, response) => {
 			);
 		});
 
-		const updateVendor = await VendorSchema.updateOne(
-			{ name: vendor.name },
-			{
-				$inc: {
-					balance: totalPriceArr.reduce((a, b) => a + b),
-				},
-			},
-		);
-
-		console.log(updateVendor);
-
+		const totalValue = total.reduce((a, b) => a + b)
+		
+		await VendorSchema.updateOne({name: vendor}, {
+			$inc: {
+				balance: totalValue
+			}
+		})
+ 		
 		const newInventoryData = new InventorySchema({
 			vendor,
 			invoiceNo,
 			date,
 			reference,
 			products,
+			totalValue,
 			createdAt: new Date().toISOString(),
 		});
 
