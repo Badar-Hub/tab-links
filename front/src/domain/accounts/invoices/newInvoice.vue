@@ -9,6 +9,7 @@
       <div class="col col-xs-12 col-sm-6 q-my-sm q-px-md">
         <q-select
           v-model="newInvoice.customerName"
+          :disable="!isEditable"
           label="Select Customer"
           :options="customerList"
           filled
@@ -23,7 +24,13 @@
         />
       </div>
       <div class="col col-xs-12 col-sm-6 q-my-sm q-px-md">
-        <q-input filled v-model="newInvoice.date" mask="date" :rules="['date']">
+        <q-input
+          :disable="!isEditable"
+          filled
+          v-model="newInvoice.date"
+          mask="date"
+          :rules="['date']"
+        >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy
@@ -42,7 +49,12 @@
         </q-input>
       </div>
       <div class="col col-xs-12 col-sm-6 q-my-sm q-px-md">
-        <q-input v-model="newInvoice.reference" label="Reference" filled />
+        <q-input
+          :disable="!isEditable"
+          v-model="newInvoice.reference"
+          label="Reference"
+          filled
+        />
       </div>
       <div class="col col-xs-12 q-my-sm q-px-md">
         <div
@@ -105,6 +117,7 @@ export default defineComponent({
     const customerList = ref([]);
     const totalValueArr = ref<Array<number>>([]);
     const isTotalValue = ref(false);
+    const isEditable = ref(true);
 
     const calculateTotal = () => {
       isTotalValue.value = true;
@@ -151,12 +164,26 @@ export default defineComponent({
     };
 
     const resetForm = () => {
+      isEditable.value = false;
       newInvoice.value._id = '';
       newInvoice.value.customerName = '';
       newInvoice.value.date = '28-08-2021';
       newInvoice.value.reference = '';
       newInvoice.value.products = [];
       newInvoice.value.totalValue = 0;
+    };
+
+    const setToEdit = (invoice: NewInvoiceModel) => {
+      isEditable.value = false;
+      newInvoice.value._id = invoice._id;
+      newInvoice.value.customerName = invoice.customerName;
+      newInvoice.value.invoiceNo = invoice.invoiceNo;
+      newInvoice.value.date = invoice.date;
+      newInvoice.value.reference = invoice.reference;
+      newInvoice.value.products = invoice.products;
+      newInvoice.value.totalValue = invoice.totalValue;
+
+      console.log(newInvoice.value);
     };
 
     const onSubmit = async () => {
@@ -196,6 +223,8 @@ export default defineComponent({
       calculateTotal,
       isTotalValue,
       onSubmit,
+      setToEdit,
+      isEditable,
     };
   },
 });

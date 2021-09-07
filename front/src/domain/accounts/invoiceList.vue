@@ -47,6 +47,7 @@
                       class="q-px-sm q-mx-auto"
                       color="primary"
                       label="View invoices"
+                      :to="`/records/vendors/${vendor.name}`"
                     />
                   </div>
                   <div class="col-xs-12 col-sm-6 q-px-sm">
@@ -86,7 +87,7 @@
                       class="q-px-sm q-mx-auto full-width"
                       color="primary"
                       label="View invoices"
-                      :to="`/records/${customer.name}`"
+                      :to="`/records/customers/${customer.name}`"
                     />
                   </div>
                   <div class="col-xs-12 col-sm-6 q-px-sm q-my-sm">

@@ -53,9 +53,14 @@ const routes = [
     component: () => import("../views/Records.vue"),
     children: [
       {
-        path: ':id',
+        path: 'customers/:id',
         name: "Customer Records",
         component: () => import("../domain/accounts/customer/customerRecord.vue"),
+      },
+      {
+        path: 'vendors/:id',
+        name: "Vendor Records",
+        component: () => import("../domain/accounts/vendor/vendorRecord.vue"),
       }
     ]
   },
