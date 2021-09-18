@@ -1,60 +1,92 @@
 <template>
-  <div class="q-pa-md">
-    <div class="row">
-      <div class="col-xs-12 col-sm-6 text-left">
-        <h5 class="q-my-sm">Category List</h5>
+  <div>
+    <div class="q-pa-md">
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 text-left">
+          <h5 class="q-my-sm">Category List</h5>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-right">
+          <q-btn
+            @click="newCategoryAction"
+            label="Add New Category"
+            color="primary"
+          />
+        </div>
       </div>
-      <div class="col-xs-12 col-sm-6 text-right">
-        <q-btn
-          @click="newCategoryAction"
-          label="Add New Category"
-          color="primary"
-        />
+      <div class="row">
+        <Table
+          class="full-width"
+          :isLoading="false"
+          :data="data"
+          :tableDef="tableDef"
+        >
+          <template #actions="{ props }">
+            <div class="row">
+              <q-btn
+                class="q-pa-none"
+                flat
+                round
+                color="primary"
+                icon="edit"
+                @click="editCategory(props.row)"
+              />
+            </div>
+          </template>
+        </Table>
       </div>
     </div>
-    <div class="row">
-      <div
-        v-for="(category, i) in categories"
-        :key="i"
-        class="col-xs-12 col-sm-4 q-pa-sm"
-      >
-        <CategoryCard
-          @editAction="editCategory(category)"
-          @deleteAction="deleteCategory(category._id)"
-          :category="category"
-        />
-      </div>
-    </div>
+    <modal
+      @close="refreshList"
+      v-model="categoryModal"
+      name="Add New Category"
+      :title="isEditing ? 'Update Category' : 'Add New Category'"
+    >
+      <NewCategoryForm
+        @closeModal="refreshList"
+        ref="categoryRef"
+        :isEditing="isEditing"
+      />
+    </modal>
   </div>
-  <NewCategoryModal
-    ref="categoryRef"
-    :isEditing="isEditing"
-    v-model="categoryModal"
-    @close="refreshList"
-  />
 </template>
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue';
-import CategoryCard from './CategoryCard.vue';
 import CategoryModel from './CategoryModel';
-import NewCategoryModal from './NewCategoryModal.vue';
+import NewCategoryForm from './NewCategoryForm.vue';
 import CategoryService from './CategoryService';
+import Modal from '../../components/Layout/Modal.vue';
+import Column from '../../components/General/Table/ColumnModel';
+import TableModel from '../../components/General/Table/TableModel';
+import PagedResultModel from '../../interfaces/PagedResultModel';
+import Table from '../../components/General/Table/Table.vue';
 
 export default defineComponent({
   components: {
-    CategoryCard,
-    NewCategoryModal,
+    NewCategoryForm,
+    Modal,
+    Table,
   },
   setup() {
     const categoryModal = ref(false);
     const categoryRef = ref();
     const isEditing = ref(false);
     const categories = ref<CategoryModel[]>([]);
+    const data = ref<PagedResultModel<CategoryModel>>(
+      new PagedResultModel<CategoryModel>()
+    );
+    const tableDef = ref<TableModel>(
+      new TableModel([
+        new Column('_id', 'ID'),
+        new Column('name', 'Name'),
+        new Column('actions', 'Actions', true),
+      ])
+    );
 
     const getCategories = async () => {
       try {
         categories.value = await CategoryService.getCategories();
+        data.value.results = categories.value;
       } catch (error) {
         console.log(error);
       }
@@ -80,9 +112,9 @@ export default defineComponent({
     };
 
     const refreshList = async () => {
-      console.log('reset-list');
       getCategories();
       categoryModal.value = !categoryModal.value;
+      console.log(categoryModal.value);
     };
 
     onMounted(async () => {
@@ -94,6 +126,8 @@ export default defineComponent({
     });
 
     return {
+      data,
+      tableDef,
       isEditing,
       editCategory,
       deleteCategory,

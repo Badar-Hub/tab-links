@@ -27,26 +27,29 @@
         </div>
       </div>
     </div>
-    <NewCustomerModal
-      ref="customerRef"
-      :isEditing="isEditing"
-      v-model="customerModal"
-      @close="refreshList"
-    />
+    <modal @close="customerModal = false" v-model="customerModal" :title="isEditing ? 'Update Customer' : 'Add New Customer'">
+      <NewCustomerForm
+        ref="customerRef"
+        :isEditing="isEditing"
+        @closeModal="refreshList"
+      />
+    </modal>
   </div>
 </template>
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue';
 import CustomerCard from './CustomerCard.vue';
-import NewCustomerModal from './NewCustomerModal.vue';
+import NewCustomerForm from './NewCustomerForm.vue';
 import CustomerService from './CustomerService';
 import CustomerModel from './CustomerModel';
+import Modal from '../../components/Layout/Modal.vue';
 
 export default defineComponent({
   components: {
     CustomerCard,
-    NewCustomerModal,
+    NewCustomerForm,
+    Modal
   },
   setup() {
     const customerModal = ref(false);

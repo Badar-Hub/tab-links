@@ -1,57 +1,95 @@
 <template>
-  <div class="q-pa-md">
-    <div class="row">
-      <div class="col-xs-12 col-sm-6 text-left">
-        <h5 class="q-my-sm">Brand List</h5>
+  <div>
+    <div class="q-pa-md">
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 text-left">
+          <h5 class="q-my-sm">Brand List</h5>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-right">
+          <q-btn
+            @click="newBrandAction"
+            label="Add New Brand"
+            color="primary"
+          />
+        </div>
       </div>
-      <div class="col-xs-12 col-sm-6 text-right">
-        <q-btn @click="newBrandAction" label="Add New Brand" color="primary" />
+      <div class="row">
+        <Table
+          class="full-width"
+          :isLoading="false"
+          :data="data"
+          :tableDef="tableDef"
+        >
+          <template #actions="{ props }">
+            <div class="row">
+              <q-btn
+                class="q-pa-none"
+                flat
+                round
+                color="primary"
+                icon="edit"
+                @click="editBrand(props.row)"
+              />
+            </div>
+          </template>
+        </Table>
       </div>
     </div>
-    <div class="row">
-      <div
-        v-for="(brand, i) in brands"
-        :key="i"
-        class="col-xs-12 col-sm-4 q-pa-sm"
-      >
-        <BrandCard
-          @editAction="editBrand(brand)"
-          @deleteAction="deleteBrand(brand.id)"
-          :brand="brand"
-        />
-      </div>
-    </div>
+    <modal
+      v-model="brandModal"
+      @close="brandModal = false"
+      name="Add New Brand"
+      :title="isEditing ? 'Update Brand' : 'Add New Brand'"
+    >
+      <NewBrandForm
+        ref="brandRef"
+        :isEditing="isEditing"
+        @close="refreshList"
+      />
+    </modal>
   </div>
-  <NewBrandModal
-    ref="brandRef"
-    :isEditing="isEditing"
-    v-model="brandModal"
-    @close="refreshList"
-  />
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted } from "vue";
-import BrandCard from "./BrandCard.vue";
-import BrandModel from "./BrandModel";
-import BrandService from "./BrandsService";
-import NewBrandModal from "./NewBrandModal.vue";
+import { ref, defineComponent, onMounted } from 'vue';
+import Modal from '../../components/Layout/Modal.vue';
+import Column from '../../components/General/Table/ColumnModel';
+import TableModel from '../../components/General/Table/TableModel';
+import PagedResultModel from '../../interfaces/PagedResultModel';
+import Table from '../../components/General/Table/Table.vue';
+// import BrandCard from './BrandCard.vue';
+import BrandModel from './BrandModel';
+import BrandService from './BrandsService';
+import NewBrandForm from './NewBrandForm.vue';
 
 export default defineComponent({
   components: {
-    BrandCard,
-    NewBrandModal,
+    // BrandCard,
+    NewBrandForm,
+    Modal,
+    Table,
   },
   setup() {
     const brandModal = ref(false);
     const brandRef = ref();
     const isEditing = ref(false);
+    const data = ref<PagedResultModel<BrandModel>>(
+      new PagedResultModel<BrandModel>()
+    );
+    const tableDef = ref<TableModel>(
+      new TableModel([
+        new Column('_id', 'ID'),
+        new Column('name', 'Name'),
+        new Column('actions', 'Actions', true),
+      ])
+    );
 
     const brands = ref<BrandModel[]>([]);
 
     const getBrands = async () => {
       try {
         brands.value = await BrandService.getBrands();
+        data.value.results = brands.value;
       } catch (error) {
         console.log(error);
       }
@@ -68,13 +106,15 @@ export default defineComponent({
     };
 
     const editBrand = async (brand: BrandModel) => {
+      console.log(brand);
+
       isEditing.value = true;
       brandRef.value.setToEdit(brand);
       brandModal.value = true;
     };
 
     const refreshList = async () => {
-      console.log("reset-list");
+      console.log('reset-list');
       getBrands();
       brandModal.value = !brandModal.value;
     };
@@ -90,6 +130,8 @@ export default defineComponent({
     return {
       brands,
       brandRef,
+      data,
+      tableDef,
       editBrand,
       isEditing,
       brandModal,

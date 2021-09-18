@@ -1,8 +1,4 @@
 <template>
-  <Modal
-    width="650px"
-    :title="isEditing ? 'Update Product' : 'Add New Product'"
-  >
     <q-form @submit="onSubmit">
       <div class="row">
         <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
@@ -91,12 +87,10 @@
         </div>
       </div>
     </q-form>
-  </Modal>
 </template>
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue';
-import Modal from '../../components/General/Modal.vue';
 import ProductModel from './ProductModel';
 import CategoryModel from '../categories/CategoryModel';
 import BrandModel from '../brands/BrandModel';
@@ -105,15 +99,13 @@ import BrandsService from '../brands/BrandsService';
 import CategoryService from '../categories/CategoryService';
 
 export default defineComponent({
-  components: {
-    Modal,
-  },
   props: {
     isEditing: {
       type: Boolean,
       default: () => false,
     },
   },
+  emits: ['close-modal'],
   setup(_, context) {
     const brands = ref([]);
     const categories = ref([]);
@@ -161,7 +153,7 @@ export default defineComponent({
           await ProductService.newProducts(product.value);
         }
         console.log(product.value);
-        context.emit('close');
+        context.emit('close-modal');
         resetForm();
       } catch (error) {
         console.log(error);

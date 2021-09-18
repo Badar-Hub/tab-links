@@ -15,7 +15,11 @@
           </router-link>
         </q-toolbar-title>
       </q-toolbar>
-      <q-btn @click="leftDrawerOpen = !leftDrawerOpen" icon="menu" size="14px" />
+      <q-btn
+        @click="leftDrawerOpen = !leftDrawerOpen"
+        icon="menu"
+        size="14px"
+      />
     </q-header>
 
     <Sidebar v-model="leftDrawerOpen" />
@@ -25,12 +29,12 @@
   </q-layout>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from 'vue';
 import Sidebar from './components/Layout/Sidebar.vue';
 
 export default {
-  components: { Sidebar },
+  components: { Sidebar,  },
   name: 'App',
 
   setup() {

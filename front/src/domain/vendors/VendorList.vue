@@ -1,50 +1,56 @@
 <template>
-  <div class="q-pa-md">
-    <div class="row">
-      <div class="col-xs-12 col-sm-6 text-left">
-        <h5 class="q-my-sm">Vendor List</h5>
+  <div>
+    <div class="q-pa-md">
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 text-left">
+          <h5 class="q-my-sm">Vendor List</h5>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-right">
+          <q-btn
+            @click="newVendorAction"
+            label="Add New Vendor"
+            color="primary"
+          />
+        </div>
       </div>
-      <div class="col-xs-12 col-sm-6 text-right">
-        <q-btn
-          @click="newVendorAction"
-          label="Add New Vendor"
-          color="primary"
-        />
+      <div class="row">
+        <div
+          v-for="(vendor, i) in vendors"
+          :key="i"
+          class="col-xs-12 col-sm-4 q-pa-sm"
+        >
+          <VendorCard
+            @editAction="editVendor(vendor)"
+            @deleteAction="deleteVendor(vendor.id)"
+            :vendor="vendor"
+          />
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div
-        v-for="(vendor, i) in vendors"
-        :key="i"
-        class="col-xs-12 col-sm-4 q-pa-sm"
-      >
-        <VendorCard
-          @editAction="editVendor(vendor)"
-          @deleteAction="deleteVendor(vendor.id)"
-          :vendor="vendor"
-        />
-      </div>
-    </div>
+    <modal :title="isEditing ? 'Update Vendor' : 'Add New Vendor'">
+      <NewVendorForm
+        ref="vendorRef"
+        :isEditing="isEditing"
+        v-model="vendorModal"
+        @close="refreshList"
+      />
+    </modal>
   </div>
-  <NewVendorModal
-    ref="vendorRef"
-    :isEditing="isEditing"
-    v-model="vendorModal"
-    @close="refreshList"
-  />
 </template>
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue';
 import VendorCard from './VendorCard.vue';
 import VendorModel from './VendorModel';
-import NewVendorModal from './NewVendorModal.vue';
+import NewVendorForm from './NewVendorForm.vue';
 import VendorService from './VendorService';
+import Modal from '../../components/Layout/Modal.vue';
 
 export default defineComponent({
   components: {
     VendorCard,
-    NewVendorModal,
+    NewVendorForm,
+    Modal,
   },
   setup() {
     const vendorModal = ref(false);
@@ -59,29 +65,6 @@ export default defineComponent({
         console.log(error);
       }
     };
-
-    // const vendors = [
-    //   {
-    //     id: '50-',
-    //     name: 'Hello',
-    //     phone: '03321021700',
-    //     bankName: 'HBL',
-    //     accountNo: '23997980857903',
-    //     balance: 500,
-    //     address: 'DHA',
-    //     createdAt: '12-01-2020',
-    //   },
-    //   {
-    //     id: '50-',
-    //     name: 'Hello',
-    //     phone: '03321021700',
-    //     bankName: 'HBL',
-    //     accountNo: '23997980857903',
-    //     balance: 500,
-    //     address: 'DHA',
-    //     createdAt: '12-01-2020',
-    //   },
-    // ];
 
     const newVendorAction = () => {
       isEditing.value = false;
@@ -100,7 +83,6 @@ export default defineComponent({
     };
 
     const refreshList = async () => {
-      console.log('reset-list');
       getVendors();
       vendorModal.value = !vendorModal.value;
     };

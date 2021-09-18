@@ -50,30 +50,61 @@
         />
       </div>
     </div>
-    <AddNewProduct v-model="addNewProductModal" />
-    <AddNewCategory v-model="addNewCategoryModal" />
-    <AddNewBrand v-model="addNewBrandModal" />
-    <AddNewCustomer v-model="addNewCustomerModal" />
-    <AddNewVendor v-model="addNewVendorModal" />
-    <Dialog
-      v-model="addNewInvoiceModal"
+    <modal
+      @close="addNewProductModal = false"
+      title="Add New Product"
+      v-model="addNewProductModal"
+    >
+      <AddNewProduct @closeModal="addNewProductModal = !addNewProductModal" />
+    </modal>
+    <modal
+      @close="addNewCategoryModal = false"
+      title="Add New Category"
+      v-model="addNewCategoryModal"
+    >
+      <AddNewCategory @closeModal="addNewCategoryModal = false" />
+    </modal>
+    <modal
+      @close="addNewBrandModal = !addNewBrandModal"
+      title="Add New Brand"
+      v-model="addNewBrandModal"
+    >
+      <AddNewBrand @close-modal="addNewBrandModal = false" />
+    </modal>
+    <modal
+      @close="addNewCustomerModal = !addNewCustomerModal"
+      title="Add New Customer"
+      v-model="addNewCustomerModal"
+    >
+      <AddNewCustomer v-model="addNewCustomerModal" />
+    </modal>
+    <modal
+      @close="addNewVendorModal = !addNewVendorModal"
+      title="Add New Vendor"
+      v-model="addNewVendorModal"
+    >
+      <AddNewVendor @closeModal="addNewVendorModal = false" />
+    </modal>
+    <modal
+      @close="addNewInvoiceModal = !addNewInvoiceModal"
       title="Create New Invoice"
       width="800px"
+      v-model="addNewInvoiceModal"
     >
       <AddNewInvoice />
-    </Dialog>
+    </modal>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import AddNewProduct from '../domain/products/NewProductModal.vue';
-import AddNewCategory from '../domain/categories/NewCategoryModal.vue';
-import AddNewCustomer from '../domain/customers/NewCustomerModal.vue';
-import AddNewBrand from '../domain/brands/NewBrandModal.vue';
-import AddNewVendor from '../domain/vendors/NewVendorModal.vue';
+import AddNewProduct from '../domain/products/NewProductForm.vue';
+import AddNewCategory from '../domain/categories/NewCategoryForm.vue';
+import AddNewCustomer from '../domain/customers/NewCustomerForm.vue';
+import AddNewBrand from '../domain/brands/NewBrandForm.vue';
+import AddNewVendor from '../domain/vendors/NewVendorForm.vue';
 import AddNewInvoice from '../domain/accounts/invoices/newInvoice.vue';
-import Dialog from '../components/General/Modal.vue';
+import Modal from '../components/Layout/Modal.vue';
 
 export default defineComponent({
   components: {
@@ -83,7 +114,7 @@ export default defineComponent({
     AddNewInvoice,
     AddNewVendor,
     AddNewBrand,
-    Dialog,
+    Modal,
   },
   setup() {
     const addNewProductModal = ref(false);

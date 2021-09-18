@@ -1,5 +1,4 @@
 <template>
-  <Modal :title="isEditing ? 'Update Brand' : 'Add New Brand'">
     <q-form @submit="onSubmit">
       <div class="row">
         <div class="col-xs-12 q-px-sm q-my-sm">
@@ -23,25 +22,21 @@
         </div>
       </div>
     </q-form>
-  </Modal>
 </template>
 
 <script lang="ts">
 import { ref, defineComponent } from 'vue';
-import Modal from '../../components/General/Modal.vue';
 import BrandModel from './BrandModel';
 import BrandService from './BrandsService';
 
 export default defineComponent({
-  components: {
-    Modal,
-  },
   props: {
     isEditing: {
       type: Boolean,
       default: () => false,
     },
   },
+  emits: ['close-modal'],
   setup(_, context) {
     const brand = ref<BrandModel>({
       name: '',
@@ -64,8 +59,7 @@ export default defineComponent({
         } else {
           await BrandService.newBrand(brand.value);
         }
-        console.log(brand.value.name);
-        context.emit('close');
+        context.emit('close-modal');
         resetForm();
       } catch (error) {
         console.log(error, '|error');

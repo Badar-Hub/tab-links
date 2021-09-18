@@ -1,14 +1,14 @@
 <template>
   <Modal
     width="600px"
-    :title="isEditing ? 'Update Vendor Information' : 'Add New Vendor'"
+    :title="isEditing ? 'Update Customer Information' : 'Add Customer customer'"
   >
     <q-form @submit="onSubmit">
       <div class="row">
         <div class="col-xs-12 col-sm-6 q-px-sm q-my-sm">
           <q-input
             filled
-            v-model="vendor.name"
+            v-model="customer.name"
             label="Name"
             lazy-rules
             :rules="[
@@ -19,7 +19,7 @@
         <div class="col-xs-12 col-sm-6 q-px-sm q-my-sm">
           <q-input
             filled
-            v-model="vendor.phone"
+            v-model="customer.phone"
             label="Mobile No."
             type="number"
             lazy-rules
@@ -30,7 +30,7 @@
         <div class="col-xs-12 col-sm-6 q-px-sm q-my-sm">
           <q-input
             filled
-            v-model="vendor.address"
+            v-model="customer.address"
             label="Address"
             lazy-rules
             :rules="[
@@ -41,7 +41,7 @@
         <div class="col-xs-12 col-sm-6 q-px-sm q-my-sm">
           <q-input
             filled
-            v-model="vendor.bankName"
+            v-model="customer.bankName"
             label="Bank Details"
             lazy-rules
             :rules="[
@@ -52,7 +52,7 @@
         <div class="col-xs-12 col-sm-6 q-px-sm q-my-sm">
           <q-input
             filled
-            v-model="vendor.accountNo"
+            v-model="customer.accountNo"
             label="Account No."
             lazy-rules
             :rules="[
@@ -64,7 +64,7 @@
           <q-input
             filled
             :disable="isEditing"
-            v-model="vendor.openingBalance"
+            v-model="customer.openingBalance"
             label="Balance."
             lazy-rules
             :rules="[
@@ -88,16 +88,16 @@
 <script lang="ts">
 import { ref, defineComponent } from 'vue';
 import Modal from '../../components/General/Modal.vue';
-import VendorModel from './VendorModel';
-import VendorService from './VendorService';
+import CustomerModel from './CustomerModel';
+import CustomerService from './CustomerService';
 
 export default defineComponent({
   components: {
     Modal,
   },
-
+  emits: ['close-modal'],
   setup(_, context) {
-    const vendor = ref<VendorModel>({
+    const customer = ref<CustomerModel>({
       name: '',
       phone: '',
       address: '',
@@ -108,36 +108,35 @@ export default defineComponent({
 
     const isEditing = ref(false);
 
-    const setToEdit = (vendorData: VendorModel) => {
+    const setToEdit = (customerData: CustomerModel) => {
       isEditing.value = true;
-      vendor.value._id = vendorData._id;
-      vendor.value.name = vendorData.name;
-      vendor.value.phone = vendorData.phone;
-      vendor.value.address = vendorData.address;
-      vendor.value.bankName = vendorData.bankName;
-      vendor.value.accountNo = vendorData.accountNo;
+      customer.value._id = customerData._id;
+      customer.value.name = customerData.name;
+      customer.value.phone = customerData.phone;
+      customer.value.address = customerData.address;
+      customer.value.bankName = customerData.bankName;
+      customer.value.accountNo = customerData.accountNo;
     };
 
     const resetForm = () => {
-      vendor.value._id = '';
-      vendor.value.name = '';
-      vendor.value.phone = '';
-      vendor.value.address = '';
-      vendor.value.bankName = '';
-      vendor.value.accountNo = '';
-      vendor.value.openingBalance = 0;
+      customer.value._id = '';
+      customer.value.name = '';
+      customer.value.phone = '';
+      customer.value.address = '';
+      customer.value.bankName = '';
+      customer.value.accountNo = '';
+      customer.value.openingBalance = 0;
     };
 
     const onSubmit = async () => {
       try {
-        if (vendor.value._id) {
-          await VendorService.updateVendor(vendor.value);
+        if (customer.value._id) {
+          await CustomerService.updateCustomer(customer.value);
         } else {
-          console.log('Add New Vendor');
-          await VendorService.newVendor(vendor.value);
+          console.log('Add New customer');
+          await CustomerService.newCustomer(customer.value);
         }
-        console.log(vendor.value);
-        context.emit('close');
+        context.emit('close-modal');
         resetForm();
       } catch (error) {
         console.log(error);
@@ -149,10 +148,8 @@ export default defineComponent({
       resetForm,
       isEditing,
       setToEdit,
-      vendor,
+      customer,
     };
   },
 });
 </script>
-
-<style></style>
