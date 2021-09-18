@@ -24,7 +24,7 @@ router.post(
 			},
 			{
 				vendor: 'required|string',
-				invoiceNo: 'required|number',
+				invoiceNo: 'required|integer',
 				reference: 'required|string',
 				date: 'required|string',
 				products: 'required',
@@ -50,7 +50,7 @@ router.put(
 			},
 			{
 				vendor: 'required|string',
-				invoiceNo: 'required|number',
+				invoiceNo: 'required|integer',
 				reference: 'required|string',
 				date: 'required|string',
 				products: 'required',
