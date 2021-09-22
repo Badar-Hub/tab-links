@@ -15,7 +15,7 @@
 		"format": "prettier --write \"./**/*.js\"",
 		"lint": "eslint \"./**/*.js\"",
 		"test": "mocha --timeout 10000",
-		"build": "git clone && rm -r dist && cd ../front && yarn && yarn build && mv dist ../back"
+		"build": "git pull && rm -r dist && cd ../front && yarn && yarn build && mv dist ../back"
 	},
 	"dependencies": {
 		"@sendgrid/mail": "^7.4.4",
