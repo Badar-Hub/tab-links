@@ -1,79 +1,108 @@
-import { createRouter, createWebHashHistory } from "vue-router";
-import Home from "../views/Home.vue";
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../views/Home.vue';
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
+    path: '/',
+    name: 'Home',
     component: Home,
   },
   {
-    path: "/create",
-    name: "Create",
-    component: () => import('../views/Create.vue')
+    path: '/create',
+    name: 'Create',
+    component: () => import('../views/Create.vue'),
   },
   {
-    path: "/vendors",
-    name: "Vendors",
-    component: () => import("../domain/vendors/VendorList.vue"),
+    path: '/inventory',
+    name: 'Inventory',
+    component: () => import('../domain/inventory/InventoryList.vue'),
   },
   {
-    path: "/customers",
-    name: "Customers",
-    component: () => import("../domain/customers/CustomerList.vue"),
+    path: '/accounts',
+    name: 'Accounts',
+    component: () => import('../domain/accounts/invoiceList.vue'),
   },
   {
-    path: "/brands",
-    name: "Brands",
-    component: () => import("../domain/brands/BrandList.vue"),
-  },
-  {
-    path: "/categories",
-    name: "Categories",
-    component: () => import("../domain/categories/CategoryList.vue"),
-  },
-  {
-    path: "/products",
-    name: "Products",
-    component: () => import("../domain/products/ProductList.vue"),
-  },
-  {
-    path: "/inventory",
-    name: "Inventory",
-    component: () => import("../domain/inventory/InventoryList.vue"),
-  },
-  {
-    path: "/accounts",
-    name: "Accounts",
-    component: () => import("../domain/accounts/invoiceList.vue"),
-  },
-  {
-    path: "/records",
-    name: "Customer Records",
-    component: () => import("../views/Records.vue"),
+    path: '/setup',
+    name: 'Setup',
+    component: () => import('../views/Setup.vue'),
     children: [
       {
-        path: 'customers/:id',
-        name: "Customer Records",
-        component: () => import("../domain/accounts/customer/customerRecord.vue"),
+        path: '/setup/brands',
+        name: 'Brands',
+        component: () => import('../domain/brands/BrandList.vue'),
       },
       {
-        path: 'vendors/:id',
-        name: "Vendor Records",
-        component: () => import("../domain/accounts/vendor/vendorRecord.vue"),
-      }
-    ]
+        path: '/setup/categories',
+        name: 'Categories',
+        component: () => import('../domain/categories/CategoryList.vue'),
+      },
+      {
+        path: '/setup/products',
+        name: 'Products',
+        component: () => import('../domain/products/ProductList.vue'),
+      },
+      {
+        path: '/setup/vendors',
+        name: 'Vendors',
+        component: () => import('../domain/vendors/VendorList.vue'),
+      },
+      {
+        path: '/setup/customers',
+        name: 'Customers',
+        component: () => import('../domain/customers/CustomerList.vue'),
+      },
+    ],
   },
   {
-    path: "/invoice",
-    name: "Invoice",
-    component: () => import("../domain/accounts/invoices/newInvoice.vue"),
-  }
-
+    path: '/invoicing',
+    name: 'Invoicing',
+    component: () => import('../views/Invoice.vue'),
+    children: [
+      {
+        path: '/invoicing/new-invoice',
+        name: 'New Invoice',
+        component: () => import('../domain/accounts/invoices/newInvoice.vue'),
+      },
+    ],
+  },
+  {
+    path: '/accounting',
+    name: 'Accounting',
+    component: () => import('../views/Records.vue'),
+    children: [
+      {
+        path: '/accounting/customer-ledger',
+        name: 'Customer Ledger',
+        component: () => import('../domain/accounts/customer/CustomerInvoices.vue'),
+      },
+      {
+        path: '/accounting/vendor-ledger',
+        name: 'Vendor Ledger',
+        component: () => import('../domain/accounts/vendor/VendorRecevings.vue'),
+      },
+      {
+        path: '/accounting/customer-ledger/:id',
+        name: 'Customer Records',
+        component: () =>
+          import('../domain/accounts/customer/customerRecord.vue'),
+      },
+      {
+        path: '/accounting/vendors/:id',
+        name: 'Vendor Records',
+        component: () => import('../domain/accounts/vendor/vendorRecord.vue'),
+      },
+    ],
+  },
+  {
+    path: '/invoice',
+    name: 'Invoice',
+    component: () => import('../domain/accounts/invoices/newInvoice.vue'),
+  },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 

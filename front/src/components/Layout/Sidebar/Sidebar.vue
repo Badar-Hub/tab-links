@@ -9,7 +9,22 @@
       <div class="row">
         <hr class="full-width" />
       </div>
-      <router-link class="button" to="/">
+      <router-link class="button" to="/setup">
+        <div class="row q-px-xl q-my-sm button">
+          <h6 class="q-my-sm cl-white">Setup</h6>
+        </div>
+      </router-link>
+      <router-link class="button" to="/invoicing">
+        <div class="row q-px-xl q-my-sm button">
+          <h6 class="q-my-sm cl-white">Invoicing</h6>
+        </div>
+      </router-link>
+      <router-link class="button" to="/accounting">
+        <div class="row q-px-xl q-my-sm button">
+          <h6 class="q-my-sm cl-white">Accounting</h6>
+        </div>
+      </router-link>
+      <!-- <router-link class="button" to="/">
         <div class="row q-px-xl q-my-sm button">
           <h6 class="q-my-sm cl-white">Dashboard</h6>
         </div>
@@ -43,7 +58,7 @@
         <div class="row q-px-xl q-my-sm button">
           <h6 class="q-my-sm cl-white">Receive Inventory</h6>
         </div>
-      </router-link>
+      </router-link> -->
     </q-drawer>
   </div>
 </template>

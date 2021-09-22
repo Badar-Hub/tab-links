@@ -57,16 +57,28 @@
         />
       </div>
       <div class="col col-xs-12 q-my-sm q-px-md">
-        <div
-          class="q-my-sm"
-          v-for="(product, index) in newInvoice.products"
-          :key="index"
-        >
-          <InvoiceProduct :invoice="product" />
-        </div>
+        <q-card>
+          <q-card-section>
+            <div
+              class="q-my-sm"
+              v-for="(product, index) in newInvoice.products"
+              :key="index"
+            >
+              <InvoiceProduct
+                @removeProduct="removeProduct(index)"
+                :products="productsList"
+                :invoice="product"
+              />
+            </div>
+          </q-card-section>
+        </q-card>
       </div>
       <div class="col-xs-12 q-px-md">
-        <q-btn label="Add Another Product" @click="addAnotherProduct" />
+        <q-btn
+          :disable="diableNewProduct"
+          label="Add Another Product"
+          @click="addAnotherProduct"
+        />
       </div>
       <div v-if="isTotalValue" class="col-xs-12 text-right q-my-sm q-px-xl">
         <h6 class="q-my-sm">Rs: {{ newInvoice.totalValue }}</h6>
@@ -86,7 +98,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted } from 'vue';
+import { ref, defineComponent, onMounted, watch } from 'vue';
 import CustomerService from '../../customers/CustomerService';
 import CustomerModel from '../../customers/CustomerModel';
 import ProductModel from '../../products/ProductModel';
@@ -118,6 +130,26 @@ export default defineComponent({
     const totalValueArr = ref<Array<number>>([]);
     const isTotalValue = ref(false);
     const isEditable = ref(true);
+    const diableNewProduct = ref(false);
+
+    watch(
+      () => newInvoice.value.products.length,
+      () => {
+        newInvoice.value.products.forEach((product) => {
+          productsList.value = productsList.value.filter(
+            (p) => p != product.name
+          );
+        });
+      }
+    );
+
+    watch(
+      () => productsList.value,
+      () => {
+        diableNewProduct.value = productsList.value.length - 1 ? false : true;
+        console.log(productsList.value, productsList.value.length);
+      }
+    );
 
     const calculateTotal = () => {
       isTotalValue.value = true;
@@ -150,7 +182,7 @@ export default defineComponent({
 
     const removeProduct = (index: number) => {
       newInvoice.value.products = newInvoice.value.products.filter(
-        (product, i) => i !== index
+        (_, i) => i !== index
       );
     };
 
@@ -225,6 +257,7 @@ export default defineComponent({
       onSubmit,
       setToEdit,
       isEditable,
+      diableNewProduct,
     };
   },
 });

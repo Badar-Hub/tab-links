@@ -16,7 +16,7 @@
       <div class="row">
         <Table
           class="full-width"
-          :isLoading="false"
+          :isLoading="isLoading"
           :data="data"
           :tableDef="tableDef"
         >
@@ -73,6 +73,7 @@ export default defineComponent({
     const productModal = ref(false);
     const productRef = ref();
     const isEditing = ref(false);
+    const isLoading = ref(true);
     const products = ref<ProductModel[]>([]);
     const data = ref<PagedResultModel<ProductModel>>(
       new PagedResultModel<ProductModel>()
@@ -92,8 +93,10 @@ export default defineComponent({
 
     const getProducts = async () => {
       try {
+        isLoading.value = true;
         products.value = await ProductService.getProducts();
         data.value.results = products.value
+        isLoading.value = false;
       } catch (error) {
         console.log(error);
       }
@@ -133,6 +136,7 @@ export default defineComponent({
       data,
       tableDef,
       products,
+      isLoading,
       isEditing,
       productModal,
       productRef,

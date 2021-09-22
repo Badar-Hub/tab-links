@@ -16,7 +16,7 @@
       <div class="row">
         <Table
           class="full-width"
-          :isLoading="false"
+          :isLoading="isLoading"
           :data="data"
           :tableDef="tableDef"
         >
@@ -73,6 +73,7 @@ export default defineComponent({
     const brandModal = ref(false);
     const brandRef = ref();
     const isEditing = ref(false);
+    const isLoading = ref(true)
     const data = ref<PagedResultModel<BrandModel>>(
       new PagedResultModel<BrandModel>()
     );
@@ -88,8 +89,10 @@ export default defineComponent({
 
     const getBrands = async () => {
       try {
+        isLoading.value = true;
         brands.value = await BrandService.getBrands();
         data.value.results = brands.value;
+        isLoading.value = false;
       } catch (error) {
         console.log(error);
       }
@@ -132,6 +135,7 @@ export default defineComponent({
       brandRef,
       data,
       tableDef,
+      isLoading,
       editBrand,
       isEditing,
       brandModal,

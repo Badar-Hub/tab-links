@@ -14,17 +14,25 @@
         </div>
       </div>
       <div class="row">
-        <div
-          v-for="(customer, i) in customers"
-          :key="i"
-          class="col-xs-12 col-sm-4 q-pa-sm"
+         <Table
+          class="full-width"
+          :isLoading="isLoading"
+          :data="data"
+          :tableDef="tableDef"
         >
-          <CustomerCard
-            @editAction="editCustomer(customer)"
-            @deleteAction="deleteCustomer(customer.id)"
-            :customer="customer"
-          />
-        </div>
+          <template #actions="{ props }">
+            <div class="row">
+              <q-btn
+                class="q-pa-none"
+                flat
+                round
+                color="primary"
+                icon="edit"
+                @click="editCustomer(props.row)"
+              />
+            </div>
+          </template>
+        </Table>
       </div>
     </div>
     <modal @close="customerModal = false" v-model="customerModal" :title="isEditing ? 'Update Customer' : 'Add New Customer'">
@@ -39,54 +47,50 @@
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue';
-import CustomerCard from './CustomerCard.vue';
 import NewCustomerForm from './NewCustomerForm.vue';
 import CustomerService from './CustomerService';
 import CustomerModel from './CustomerModel';
 import Modal from '../../components/Layout/Modal.vue';
+import Column from '../../components/General/Table/ColumnModel';
+import TableModel from '../../components/General/Table/TableModel';
+import PagedResultModel from '../../interfaces/PagedResultModel';
+import Table from '../../components/General/Table/Table.vue';
 
 export default defineComponent({
   components: {
-    CustomerCard,
     NewCustomerForm,
-    Modal
+    Modal,
+    Table
   },
   setup() {
     const customerModal = ref(false);
     const customerRef = ref();
     const customers = ref<CustomerModel[]>([]);
     const isEditing = ref(false);
+    const isLoading = ref(true);
+    const data = ref<PagedResultModel<CustomerModel>>(
+      new PagedResultModel<CustomerModel>()
+    );
+    const tableDef = ref<TableModel>(
+      new TableModel([
+        new Column('name', 'Name'),
+        new Column('phone', 'Phone'),
+        new Column('address', 'Address'),
+        new Column('balance', 'Balance'),
+        new Column('actions', 'Actions', true),
+      ])
+    );
 
     const getCustomers = async () => {
       try {
+        isLoading.value = true;
         customers.value = await CustomerService.getCustomers();
+        data.value.results = customers.value
+        isLoading.value = false;
       } catch (error) {
         console.log(error);
       }
     };
-
-    // const vendors = [
-    //   {
-    //     id: '50-',
-    //     name: 'Hello',
-    //     phone: '03321021700',
-    //     bankName: 'HBL',
-    //     accountNo: '23997980857903',
-    //     balance: 500,
-    //     address: 'DHA',
-    //     createdAt: '12-01-2020',
-    //   },
-    //   {
-    //     id: '50-',
-    //     name: 'Hello',
-    //     phone: '03321021700',
-    //     bankName: 'HBL',
-    //     accountNo: '23997980857903',
-    //     balance: 500,
-    //     address: 'DHA',
-    //     createdAt: '12-01-2020',
-    //   },
-    // ];
 
     const newCustomerAction = () => {
       isEditing.value = false;
@@ -115,14 +119,17 @@ export default defineComponent({
     });
 
     return {
+      data,
+      tableDef,
+      isLoading,
       customers,
+      isEditing,
+      refreshList,
       customerRef,
       editCustomer,
-      isEditing,
       customerModal,
       deleteCustomer,
-      refreshList,
-      newCustomerAction,
+      newCustomerAction
     };
   },
 });

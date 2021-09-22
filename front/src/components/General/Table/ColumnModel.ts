@@ -5,7 +5,7 @@ export default class Column {
   
     field: string;
   
-    sortable: boolean = false;
+    sortable: boolean;
   
     style?: string;
   
@@ -13,10 +13,11 @@ export default class Column {
   
     override: boolean = false;
   
-    constructor(name: string, label: string, override: boolean = false, style: string = "") {
+    constructor(name: string, label: string, sortable: boolean = false, override: boolean = false, style: string = "") {
       this.name = name;
       this.label = label;
       this.field = name;
+      this.sortable = sortable;
       this.style = style;
       this.override = override;
     }

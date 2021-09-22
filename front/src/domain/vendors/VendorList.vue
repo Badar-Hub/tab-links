@@ -14,17 +14,25 @@
         </div>
       </div>
       <div class="row">
-        <div
-          v-for="(vendor, i) in vendors"
-          :key="i"
-          class="col-xs-12 col-sm-4 q-pa-sm"
+        <Table
+          class="full-width"
+          :isLoading="isLoading"
+          :data="data"
+          :tableDef="tableDef"
         >
-          <VendorCard
-            @editAction="editVendor(vendor)"
-            @deleteAction="deleteVendor(vendor.id)"
-            :vendor="vendor"
-          />
-        </div>
+          <template #actions="{ props }">
+            <div class="row">
+              <q-btn
+                class="q-pa-none"
+                flat
+                round
+                color="primary"
+                icon="edit"
+                @click="editVendor(props.row)"
+              />
+            </div>
+          </template>
+        </Table>
       </div>
     </div>
     <modal :title="isEditing ? 'Update Vendor' : 'Add New Vendor'">
@@ -40,27 +48,46 @@
 
 <script lang="ts">
 import { ref, defineComponent, onMounted } from 'vue';
-import VendorCard from './VendorCard.vue';
 import VendorModel from './VendorModel';
 import NewVendorForm from './NewVendorForm.vue';
 import VendorService from './VendorService';
 import Modal from '../../components/Layout/Modal.vue';
+import Column from '../../components/General/Table/ColumnModel';
+import TableModel from '../../components/General/Table/TableModel';
+import PagedResultModel from '../../interfaces/PagedResultModel';
+import Table from '../../components/General/Table/Table.vue';
 
 export default defineComponent({
   components: {
-    VendorCard,
     NewVendorForm,
     Modal,
+    Table
   },
   setup() {
     const vendorModal = ref(false);
     const vendorRef = ref();
     const vendors = ref<VendorModel[]>([]);
     const isEditing = ref(false);
+    const isLoading = ref(true);
+    const data = ref<PagedResultModel<VendorModel>>(
+      new PagedResultModel<VendorModel>()
+    );
+    const tableDef = ref<TableModel>(
+      new TableModel([
+        new Column('name', 'Name'),
+        new Column('phone', 'Phone'),
+        new Column('address', 'Address'),
+        new Column('balance', 'Balance'),
+        new Column('actions', 'Actions', true),
+      ])
+    );
 
     const getVendors = async () => {
       try {
+        isLoading.value = true;
         vendors.value = await VendorService.getVendors();
+        data.value.results = vendors.value
+        isLoading.value = false;
       } catch (error) {
         console.log(error);
       }
@@ -92,7 +119,10 @@ export default defineComponent({
     });
 
     return {
+      data,
       vendors,
+      tableDef,
+      isLoading,
       vendorRef,
       editVendor,
       isEditing,

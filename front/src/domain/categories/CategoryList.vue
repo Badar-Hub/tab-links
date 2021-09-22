@@ -16,7 +16,7 @@
       <div class="row">
         <Table
           class="full-width"
-          :isLoading="false"
+          :isLoading="isLoading"
           :data="data"
           :tableDef="tableDef"
         >
@@ -71,6 +71,7 @@ export default defineComponent({
     const categoryModal = ref(false);
     const categoryRef = ref();
     const isEditing = ref(false);
+    const isLoading = ref(true);
     const categories = ref<CategoryModel[]>([]);
     const data = ref<PagedResultModel<CategoryModel>>(
       new PagedResultModel<CategoryModel>()
@@ -85,8 +86,10 @@ export default defineComponent({
 
     const getCategories = async () => {
       try {
+        isLoading.value = true;
         categories.value = await CategoryService.getCategories();
         data.value.results = categories.value;
+        isLoading.value = false;
       } catch (error) {
         console.log(error);
       }
@@ -128,6 +131,7 @@ export default defineComponent({
     return {
       data,
       tableDef,
+      isLoading,
       isEditing,
       editCategory,
       deleteCategory,

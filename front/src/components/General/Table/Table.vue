@@ -1,12 +1,52 @@
 <template>
   <div class="q-pa-md">
+    <Filter :filters="tableDef.columns" />
     <q-table
       :loading="isLoading"
       :rows="data.results"
       :columns="tableDef.columns"
       @request="dataRequest"
       :rows-per-page-options="[7, 10, 25, 50]"
+      :filter="filter"
     >
+      <template v-slot:top-right>
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Search"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+
+      <!-- <template v-slot:top>
+        <img
+          style="height: 50px; width: 50px"
+          src="https://cdn.quasar.dev/logo-v2/svg/logo.svg"
+        />
+
+        <q-space />
+
+        <q-select
+          v-model="visibleColumns"
+          multiple
+          outlined
+          dense
+          options-dense
+          :display-value="$q.lang.table.columns"
+          emit-value
+          map-options
+          :options="tableDef.columns"
+          option-value="name"
+          options-cover
+          style="min-width: 150px"
+        />
+      </template> -->
+
       <template
         v-for="col in overrideColumns"
         :key="col.name"
@@ -16,19 +56,29 @@
           <slot :name="col.name" v-bind:props="props"></slot>
         </q-td>
       </template>
+
       <template v-slot:bottom-row>
         <div class="q-table-bottom-row">
           <q-btn
+            icon="archive"
+            color="primary"
+            label="Export to csv"
+            no-caps
+            flat
+            unelevated
+            @click="exportTable"
+          />
+          <!-- <q-btn
             v-if="showExport"
             flat
             color="primary"
             :label="formMetadata.exportBtnLabel.label"
             size="md"
             class="font-lato-medium "
-            icon="ono-export"
+            icon="export"
             no-caps
             @click="exportTable"
-          />
+          /> -->
         </div>
       </template>
     </q-table>
@@ -43,6 +93,7 @@ import PagedResultModel from '../../../interfaces/PagedResultModel';
 import PagedRequestModel from '../../../interfaces/PagedRequestModel';
 import QuasarPaginationModel from './QuasarPaginationModel';
 import Column from './ColumnModel';
+import Filter from './Filter/Filter.vue';
 
 function wrapCsvValue(val: any, formatFn?: Function) {
   let formatted = formatFn !== undefined ? formatFn(val) : val;
@@ -61,6 +112,7 @@ function wrapCsvValue(val: any, formatFn?: Function) {
   return `"${formatted}"`;
 }
 export default defineComponent({
+  components: { Filter },
   props: {
     data: {
       type: Object as PropType<PagedResultModel<unknown>>,
@@ -77,9 +129,10 @@ export default defineComponent({
     isLoading: { type: Boolean, required: true, default: true },
   },
   setup(props, context) {
+    const $q = useQuasar();
+    const filter = ref('');
     const pagination = ref(new QuasarPaginationModel(1, 10, 0, false, ''));
     const lastSentPagination = ref();
-    const $q = useQuasar();
 
     function convertPagedResult(
       pagedResult: PagedResultModel<any>,
@@ -102,6 +155,7 @@ export default defineComponent({
         lastSentPagination.value.sortBy
       );
     }
+
     watch(toRefs(props).data, onDataUpdate);
 
     const overrideColumns = computed(() => {
@@ -157,9 +211,37 @@ export default defineComponent({
       overrideColumns,
       dataRequest,
       exportTable,
+      filter,
     };
   },
 });
 </script>
 
-<style></style>
+<style lang="scss">
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.simple-mode {
+  tr:nth-child(even) {
+    background-color: white;
+  }
+}
+
+table > *:last-child > tr:last-of-type td {
+  border: none;
+}
+.q-table-bottom-row {
+  position: absolute;
+  margin-bottom: 10px;
+  padding: 8px 20px;
+}
+.q-table__bottom {
+  @media (max-width: 598px) {
+    padding-top: 8px;
+  }
+  @media (max-width: 515px) {
+    padding-top: 40px;
+  }
+}
+</style>

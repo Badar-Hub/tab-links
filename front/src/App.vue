@@ -20,6 +20,11 @@
         icon="menu"
         size="14px"
       />
+      <q-tabs v-show="subRoutes" align="left">
+        <div v-for="(route, index) in subRoutes" :key="index">
+          <q-route-tab :to="route.path" :label="route.name" />
+        </div>
+      </q-tabs>
     </q-header>
 
     <Sidebar v-model="leftDrawerOpen" />
@@ -30,15 +35,46 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue';
-import Sidebar from './components/Layout/Sidebar.vue';
+import { onMounted, ref, watch } from 'vue';
+import Sidebar from './components/Layout/Sidebar/Sidebar.vue';
+import { RouteRecordRaw, useRoute, useRouter } from 'vue-router';
 
 export default {
-  components: { Sidebar,  },
+  components: { Sidebar },
   name: 'App',
 
   setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const subRoutes = ref<RouteRecordRaw[] | undefined>([]);
+
+    const currentRoute = route.fullPath;
+    console.log(router.options.routes, currentRoute);
+
+    watch(
+      () => route.fullPath,
+      () => onRouteChange()
+    );
+
+    const onRouteChange = () => {
+      let currentRoutePath = route.fullPath;
+      const temp = route.fullPath.split('/');
+
+      if (temp) {
+        currentRoutePath = `/${temp[1]}`;
+      }
+
+      subRoutes.value = router.options.routes.find(
+        (subRou) => subRou.path === currentRoutePath
+      )?.children;
+    };
+
+    onMounted(() => {
+      onRouteChange();
+    });
+
     return {
+      subRoutes,
       leftDrawerOpen: ref(false),
     };
   },
