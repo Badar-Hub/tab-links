@@ -26,6 +26,7 @@ const routes = [
     path: '/setup',
     name: 'Setup',
     component: () => import('../views/Setup.vue'),
+    redirect: { name: "Brands" },
     children: [
       {
         path: '/setup/brands',
@@ -58,6 +59,7 @@ const routes = [
     path: '/invoicing',
     name: 'Invoicing',
     component: () => import('../views/Invoice.vue'),
+    redirect: { name: "New Invoice" },
     children: [
       {
         path: '/invoicing/new-invoice',
@@ -70,6 +72,7 @@ const routes = [
     path: '/accounting',
     name: 'Accounting',
     component: () => import('../views/Records.vue'),
+    redirect: { name: "Customer Ledger" },
     children: [
       {
         path: '/accounting/customer-ledger',

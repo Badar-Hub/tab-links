@@ -24,6 +24,11 @@
           <h6 class="q-my-sm cl-white">Accounting</h6>
         </div>
       </router-link>
+      <div @click="logout" class="button">
+        <div class="row q-px-xl q-my-sm button">
+          <h6 class="q-my-sm cl-white">Logout</h6>
+        </div>
+      </div>
       <!-- <router-link class="button" to="/">
         <div class="row q-px-xl q-my-sm button">
           <h6 class="q-my-sm cl-white">Dashboard</h6>
@@ -75,23 +80,29 @@ export default defineComponent({
       return router.options.routes;
     });
 
+    const logout = () => {
+      localStorage.removeItem('token');
+      window.location.reload()
+    };
+
     return {
       router,
       routes,
+      logout,
     };
   },
 });
 </script>
 
 <style lang="scss">
-.router-link-active{
+.router-link-active {
   .button {
-  background-color: crimson;
+    background-color: crimson;
   }
 }
 .router-link-exact-active {
   .button {
-  background-color: crimson;
+    background-color: crimson;
   }
 }
 .sidebar {
