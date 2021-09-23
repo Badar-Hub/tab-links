@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="row">
-         <Table
+        <Table
           class="full-width"
           :isLoading="isLoading"
           :data="data"
@@ -35,7 +35,11 @@
         </Table>
       </div>
     </div>
-    <modal @close="customerModal = false" v-model="customerModal" :title="isEditing ? 'Update Customer' : 'Add New Customer'">
+    <modal
+      @close="customerModal = false"
+      v-model="customerModal"
+      :title="isEditing ? 'Update Customer' : 'Add New Customer'"
+    >
       <NewCustomerForm
         ref="customerRef"
         :isEditing="isEditing"
@@ -60,7 +64,7 @@ export default defineComponent({
   components: {
     NewCustomerForm,
     Modal,
-    Table
+    Table,
   },
   setup() {
     const customerModal = ref(false);
@@ -73,11 +77,11 @@ export default defineComponent({
     );
     const tableDef = ref<TableModel>(
       new TableModel([
-        new Column('name', 'Name'),
-        new Column('phone', 'Phone'),
-        new Column('address', 'Address'),
-        new Column('balance', 'Balance'),
-        new Column('actions', 'Actions', true),
+        new Column('name', 'Name', true),
+        new Column('phone', 'Phone', true),
+        new Column('address', 'Address', true),
+        new Column('balance', 'Balance', true),
+        new Column('actions', 'Actions', false, true),
       ])
     );
 
@@ -85,7 +89,7 @@ export default defineComponent({
       try {
         isLoading.value = true;
         customers.value = await CustomerService.getCustomers();
-        data.value.results = customers.value
+        data.value.results = customers.value;
         isLoading.value = false;
       } catch (error) {
         console.log(error);
@@ -129,7 +133,7 @@ export default defineComponent({
       editCustomer,
       customerModal,
       deleteCustomer,
-      newCustomerAction
+      newCustomerAction,
     };
   },
 });

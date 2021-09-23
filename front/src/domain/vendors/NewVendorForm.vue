@@ -86,6 +86,7 @@
 </template>
 
 <script lang="ts">
+import { useQuasar } from 'quasar';
 import { ref, defineComponent } from 'vue';
 import Modal from '../../components/General/Modal.vue';
 import VendorModel from './VendorModel';
@@ -97,6 +98,7 @@ export default defineComponent({
   },
   emits: ['close-modal'],
   setup(_, context) {
+    const $q = useQuasar();
     const vendor = ref<VendorModel>({
       name: '',
       phone: '',
@@ -132,9 +134,17 @@ export default defineComponent({
       try {
         if (vendor.value._id) {
           await VendorService.updateVendor(vendor.value);
+          $q.notify({
+            color: 'primary',
+            message: 'The Vendor has been successfully updated!',
+          });
         } else {
           console.log('Add New Vendor');
           await VendorService.newVendor(vendor.value);
+          $q.notify({
+            color: 'primary',
+            message: 'The Vendor has been successfully created!',
+          });
         }
         context.emit('close-modal');
         resetForm();

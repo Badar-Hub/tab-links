@@ -80,14 +80,14 @@ export default defineComponent({
     );
     const tableDef = ref<TableModel>(
       new TableModel([
-        new Column('sku', 'Sku'),
-        new Column('name', 'Name'),
-        new Column('brand', 'Brand'),
-        new Column('category', 'Category'),
-        new Column('price', 'Price'),
-        new Column('discount', 'Discount'),
-        new Column('quantity', 'Quantity'),
-        new Column('actions', 'Actions', true),
+        new Column('sku', 'Sku', true),
+        new Column('name', 'Name', true),
+        new Column('brand', 'Brand', true),
+        new Column('category', 'Category', true),
+        new Column('price', 'Price', true),
+        new Column('discount', 'Discount', true),
+        new Column('quantity', 'Quantity', true),
+        new Column('actions', 'Actions', false, true),
       ])
     );
 
@@ -95,7 +95,7 @@ export default defineComponent({
       try {
         isLoading.value = true;
         products.value = await ProductService.getProducts();
-        data.value.results = products.value
+        data.value.results = products.value;
         isLoading.value = false;
       } catch (error) {
         console.log(error);

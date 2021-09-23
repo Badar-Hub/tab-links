@@ -9,4 +9,5 @@ export * from './brands';
 export * from './accounts';
 export * from './categories';
 export * from './products';
+export * from './sales-return';
 export * from './inventory';

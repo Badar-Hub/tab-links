@@ -61,7 +61,7 @@ export default defineComponent({
   components: {
     NewVendorForm,
     Modal,
-    Table
+    Table,
   },
   setup() {
     const vendorModal = ref(false);
@@ -74,11 +74,11 @@ export default defineComponent({
     );
     const tableDef = ref<TableModel>(
       new TableModel([
-        new Column('name', 'Name'),
-        new Column('phone', 'Phone'),
-        new Column('address', 'Address'),
-        new Column('balance', 'Balance'),
-        new Column('actions', 'Actions', true),
+        new Column('name', 'Name', true),
+        new Column('phone', 'Phone', true),
+        new Column('address', 'Address', true),
+        new Column('balance', 'Balance', true),
+        new Column('actions', 'Actions', false, true),
       ])
     );
 
@@ -86,7 +86,7 @@ export default defineComponent({
       try {
         isLoading.value = true;
         vendors.value = await VendorService.getVendors();
-        data.value.results = vendors.value
+        data.value.results = vendors.value;
         isLoading.value = false;
       } catch (error) {
         console.log(error);

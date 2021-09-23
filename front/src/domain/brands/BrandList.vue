@@ -73,15 +73,15 @@ export default defineComponent({
     const brandModal = ref(false);
     const brandRef = ref();
     const isEditing = ref(false);
-    const isLoading = ref(true)
+    const isLoading = ref(true);
     const data = ref<PagedResultModel<BrandModel>>(
       new PagedResultModel<BrandModel>()
     );
     const tableDef = ref<TableModel>(
       new TableModel([
-        new Column('_id', 'ID'),
-        new Column('name', 'Name'),
-        new Column('actions', 'Actions', true),
+        new Column('_id', 'ID', true),
+        new Column('name', 'Name', true),
+        new Column('actions', 'Actions', false, true),
       ])
     );
 

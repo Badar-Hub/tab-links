@@ -4,7 +4,7 @@
       <div class="column justify-center login-user">
         <q-card>
           <q-card-section>
-            <div class="row">
+            <div class="row" @keypress.enter="loginUser">
               <div class="row logo full-width justify-center">
                 <img src="@/assets/logo.png" />
               </div>
@@ -24,6 +24,7 @@
               <div class="col-xs-12 q-my-md">
                 <q-btn
                   class="full-width"
+                  :loading="isLoading"
                   label="Login"
                   @click="loginUser"
                   color="primary"
@@ -79,6 +80,7 @@ import Sidebar from './components/Layout/Sidebar/Sidebar.vue';
 import UserService from './services/UserService';
 import UserModel from './interfaces/UserModel';
 import { RouteRecordRaw, useRoute, useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 export default {
   components: { Sidebar },
@@ -87,6 +89,8 @@ export default {
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const isLoading = ref(false);
+    const $q = useQuasar();
     const subRoutes = ref<RouteRecordRaw[] | undefined>([]);
     const user = ref<UserModel>({
       email: '',
@@ -99,10 +103,20 @@ export default {
 
     const loginUser = async () => {
       try {
+        isLoading.value = true;
         const data = await UserService.loginUser(user.value);
         localStorage.setItem('token', data);
+        isLoading.value = false;
         window.location.reload();
+        $q.notify({
+          color: 'primary',
+          message: 'User has been loged in successfully!',
+        });
       } catch (error) {
+        $q.notify({
+          color: 'red',
+          message: 'An error occurred',
+        });
         console.log(error);
       }
     };
@@ -132,6 +146,7 @@ export default {
     return {
       user,
       loginUser,
+      isLoading,
       subRoutes,
       isLoggenIn,
       leftDrawerOpen: ref(false),

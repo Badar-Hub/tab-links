@@ -78,9 +78,9 @@ export default defineComponent({
     );
     const tableDef = ref<TableModel>(
       new TableModel([
-        new Column('_id', 'ID'),
-        new Column('name', 'Name'),
-        new Column('actions', 'Actions', true),
+        new Column('_id', 'ID', true),
+        new Column('name', 'Name', true),
+        new Column('actions', 'Actions', false, true),
       ])
     );
 
