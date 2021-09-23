@@ -86,6 +86,7 @@
 </template>
 
 <script lang="ts">
+import { useQuasar } from 'quasar';
 import { ref, defineComponent } from 'vue';
 import Modal from '../../components/General/Modal.vue';
 import CustomerModel from './CustomerModel';
@@ -97,6 +98,7 @@ export default defineComponent({
   },
   emits: ['close-modal'],
   setup(_, context) {
+    const $q = useQuasar();
     const customer = ref<CustomerModel>({
       name: '',
       phone: '',
@@ -132,9 +134,16 @@ export default defineComponent({
       try {
         if (customer.value._id) {
           await CustomerService.updateCustomer(customer.value);
+          $q.notify({
+            color: 'primary',
+            message: 'The customer has been successfully updated!',
+          });
         } else {
-          console.log('Add New customer');
           await CustomerService.newCustomer(customer.value);
+          $q.notify({
+            color: 'primary',
+            message: 'The customer has been successfully created!',
+          });
         }
         context.emit('close-modal');
         resetForm();

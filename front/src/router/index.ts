@@ -66,6 +66,11 @@ const routes = [
         name: 'New Invoice',
         component: () => import('../domain/accounts/invoices/newInvoice.vue'),
       },
+      {
+        path: '/invoicing/sales-return',
+        name: 'Sales Return',
+        component: () => import('../domain/SalesReturn/SalesReturn.vue'),
+      },
     ],
   },
   {

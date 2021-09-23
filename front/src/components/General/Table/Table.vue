@@ -68,17 +68,6 @@
             unelevated
             @click="exportTable"
           />
-          <!-- <q-btn
-            v-if="showExport"
-            flat
-            color="primary"
-            :label="formMetadata.exportBtnLabel.label"
-            size="md"
-            class="font-lato-medium "
-            icon="export"
-            no-caps
-            @click="exportTable"
-          /> -->
         </div>
       </template>
     </q-table>

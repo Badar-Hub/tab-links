@@ -82,7 +82,8 @@ export default defineComponent({
 
     const logout = () => {
       localStorage.removeItem('token');
-      window.location.reload()
+      router.push('/');
+      window.location.reload();
     };
 
     return {

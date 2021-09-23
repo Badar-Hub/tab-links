@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import { useQuasar } from 'quasar';
 import { ref, defineComponent } from 'vue';
 import CategoryModel from './CategoryModel';
 import CategoryService from './CategoryService';
@@ -36,6 +37,7 @@ export default defineComponent({
   },
   emits: ['close-modal'],
   setup(_, context) {
+    const $q = useQuasar();
     const category = ref<CategoryModel>({
       name: '',
     });
@@ -54,8 +56,16 @@ export default defineComponent({
       try {
         if (category.value._id) {
           await CategoryService.updateCategory(category.value);
+          $q.notify({
+            color: 'primary',
+            message: 'This Category has been successfully updated!',
+          });
         } else {
           await CategoryService.newCategory(category.value);
+          $q.notify({
+            color: 'primary',
+            message: 'This Category has been successfully created!',
+          });
         }
         context.emit('close-modal');
         resetForm();

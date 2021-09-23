@@ -1,92 +1,88 @@
 <template>
-    <q-form @submit="onSubmit">
-      <div class="row">
-        <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-          <q-input
-            filled
-            v-model="product.sku"
-            label="Sku"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
-            ]"
-          />
-        </div>
-        <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-          <q-input
-            filled
-            v-model="product.name"
-            label="Product Name"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
-            ]"
-          />
-        </div>
-        <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-          <q-select
-            filled
-            v-model="product.brand"
-            :options="brands"
-            label="Brands"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please enter a valid value',
-            ]"
-          />
-        </div>
-        <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-          <q-select
-            filled
-            v-model="product.category"
-            :options="categories"
-            label="Category"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please enter a valid value',
-            ]"
-          />
-        </div>
-        <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-          <q-input
-            filled
-            v-model="product.price"
-            type="number"
-            label="Price"
-            lazy-rules
-            :rules="[(val) => val > 0 || 'Please enter a valid value']"
-          />
-        </div>
-        <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-          <q-input
-            filled
-            v-model="product.discount"
-            type="number"
-            label="Discount"
-            lazy-rules
-            :rules="[(val) => val >= 0 || 'Please enter a valid value']"
-          />
-        </div>
-        <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-          <q-input
-            filled
-            v-model="product.costPrice"
-            type="number"
-            label="Cost Price"
-            lazy-rules
-            :rules="[(val) => val > 0 || 'Please enter a valid value']"
-          />
-        </div>
-        <div class="col-xs-12 q-my-xs">
-          <q-btn
-            type="submit"
-            label="Submit"
-            color="primary"
-            class="full-width"
-          />
-        </div>
+  <q-form @submit="onSubmit">
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
+        <q-input
+          filled
+          v-model="product.sku"
+          label="Sku"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        />
       </div>
-    </q-form>
+      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
+        <q-input
+          filled
+          v-model="product.name"
+          label="Product Name"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        />
+      </div>
+      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
+        <q-select
+          filled
+          v-model="product.brand"
+          :options="brands"
+          label="Brands"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Please enter a valid value',
+          ]"
+        />
+      </div>
+      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
+        <q-select
+          filled
+          v-model="product.category"
+          :options="categories"
+          label="Category"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Please enter a valid value',
+          ]"
+        />
+      </div>
+      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
+        <q-input
+          filled
+          v-model="product.price"
+          type="number"
+          label="Price"
+          lazy-rules
+          :rules="[(val) => val > 0 || 'Please enter a valid value']"
+        />
+      </div>
+      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
+        <q-input
+          filled
+          v-model="product.discount"
+          type="number"
+          label="Discount"
+          lazy-rules
+          :rules="[(val) => val >= 0 || 'Please enter a valid value']"
+        />
+      </div>
+      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
+        <q-input
+          filled
+          v-model="product.costPrice"
+          type="number"
+          label="Cost Price"
+          lazy-rules
+          :rules="[(val) => val > 0 || 'Please enter a valid value']"
+        />
+      </div>
+      <div class="col-xs-12 q-my-xs">
+        <q-btn
+          type="submit"
+          label="Submit"
+          color="primary"
+          class="full-width"
+        />
+      </div>
+    </div>
+  </q-form>
 </template>
 
 <script lang="ts">
@@ -97,6 +93,7 @@ import BrandModel from '../brands/BrandModel';
 import ProductService from './ProductService';
 import BrandsService from '../brands/BrandsService';
 import CategoryService from '../categories/CategoryService';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   props: {
@@ -107,6 +104,7 @@ export default defineComponent({
   },
   emits: ['close-modal'],
   setup(_, context) {
+    const $q = useQuasar();
     const brands = ref([]);
     const categories = ref([]);
 
@@ -149,8 +147,16 @@ export default defineComponent({
       try {
         if (product.value._id) {
           await ProductService.updateProduct(product.value);
+          $q.notify({
+            color: 'primary',
+            message: 'This Category has been successfully updated!',
+          });
         } else {
           await ProductService.newProducts(product.value);
+          $q.notify({
+            color: 'primary',
+            message: 'This Product has been successfully created!',
+          });
         }
         console.log(product.value);
         context.emit('close-modal');
