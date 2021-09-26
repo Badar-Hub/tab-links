@@ -18,18 +18,12 @@ router.post(
 				name: request.body.name,
 				brand: request.body.brand,
 				category: request.body.category,
-				price: request.body.price,
-				discount: request.body.discount,
-				costPrice: request.body.costPrice,
 			},
 			{
 				sku: 'required|string',
 				name: 'required|string',
 				brand: 'required|string',
 				category: 'required|string',
-				price: 'required|integer',
-				discount: 'required|integer',
-				costPrice: 'required|integer',
 			},
 		);
 	},

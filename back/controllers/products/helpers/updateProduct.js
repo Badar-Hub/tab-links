@@ -5,8 +5,7 @@ export const updateProductInfo = async (request, response) => {
 	try {
 		const { id } = request.params;
 
-		const { sku, brand, category, name, price, discount, costPrice } =
-			request.body;
+		const { sku, brand, category, name } = request.body;
 
 		const product = await ProductSchema.findById(id);
 		if (!product) {
@@ -34,9 +33,6 @@ export const updateProductInfo = async (request, response) => {
 				brand,
 				category,
 				name,
-				price,
-				discount,
-				costPrice,
 			},
 		});
 

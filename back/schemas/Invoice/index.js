@@ -21,6 +21,12 @@ const Invoice = new mongoose.Schema({
 			quantity: {
 				type: Number,
 			},
+			price: {
+				type: Number,
+			},
+			discount: {
+				type: Number,
+			},
 		},
 	],
 	totalValue: {

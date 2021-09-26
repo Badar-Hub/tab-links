@@ -1,16 +1,19 @@
 import mongoose from 'mongoose';
 
 const Inventory = new mongoose.Schema({
-	vendor: {
+	vendorName: {
 		type: String,
 	},
-	invoiceNo: {
+	receivingNumber: {
 		type: Number,
 	},
-	date: {
+	reference: {
 		type: String,
 	},
-	reference: {
+	date: {
+		type: Date,
+	},
+	warehouse: {
 		type: String,
 	},
 	products: [
@@ -18,12 +21,17 @@ const Inventory = new mongoose.Schema({
 			name: {
 				type: String,
 			},
+			batchNumber: {
+				type: String,
+			},
 			quantity: {
 				type: Number,
 			},
 			costPrice: {
 				type: Number,
-				default: 0,
+			},
+			salePrice: {
+				type: Number,
 			},
 		},
 	],

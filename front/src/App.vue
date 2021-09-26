@@ -173,6 +173,9 @@ export default {
 header {
   background-color: #1d1b1b !important;
 }
+.brdr-1 {
+  border: 1px solid;
+}
 .cl {
   &-white {
     color: white;

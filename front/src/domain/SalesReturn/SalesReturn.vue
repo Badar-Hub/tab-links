@@ -4,8 +4,12 @@
       <div class="col col-xs-12 col-sm-6">
         <h6 class="q-my-sm">Sale Returns</h6>
       </div>
-      <div class="col col-xs-12 col-sm-6">
-        <q-btn color="primary" label="Add New Return" />
+      <div class="col col-xs-12 col-sm-6 text-right">
+        <q-btn
+          @click="newSalesReturnModal = !newSalesReturnModal"
+          color="primary"
+          label="Add New Return"
+        />
       </div>
     </div>
     <Table
@@ -35,6 +39,13 @@
         </div>
       </template>
     </Table>
+    <Modal
+      @close="newSalesReturnModal = !newSalesReturnModal"
+      title="New Sales Return"
+      v-model="newSalesReturnModal"
+    >
+      <NewSalesForm @close="newSalesReturnModal = !newSalesReturnModal" />
+    </Modal>
   </div>
 </template>
 
@@ -46,13 +57,19 @@ import Table from '../../components/General/Table/Table.vue';
 import Column from '../../components/General/Table/ColumnModel';
 import TableModel from '../../components/General/Table/TableModel';
 import PagedResultModel from '../../interfaces/PagedResultModel';
+import Modal from '../../components/Layout/Modal.vue';
+import NewSalesForm from './NewSalesForm.vue';
 
 export default defineComponent({
   components: {
     Table,
+    Modal,
+    NewSalesForm,
   },
+
   setup() {
     const isLoading = ref(true);
+    const newSalesReturnModal = ref(false);
     const returns = ref<SalesModel[]>([]);
     const data = ref<PagedResultModel<SalesModel>>(
       new PagedResultModel<SalesModel>()
@@ -80,13 +97,14 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      getReturns;
+      getReturns();
     });
 
     return {
       data,
       tableDef,
       isLoading,
+      newSalesReturnModal,
     };
   },
 });

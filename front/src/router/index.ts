@@ -53,14 +53,24 @@ const routes = [
         name: 'Customers',
         component: () => import('../domain/customers/CustomerList.vue'),
       },
+      {
+        path: '/setup/warehouses',
+        name: 'Warehouses',
+        component: () => import('../domain/warehouse/WarehouseList.vue'),
+      },
     ],
   },
   {
     path: '/invoicing',
     name: 'Invoicing',
     component: () => import('../views/Invoice.vue'),
-    redirect: { name: "New Invoice" },
+    redirect: { name: "Invoices" },
     children: [
+      {
+        path: '/invoicing/invoices',
+        name: 'Invoices',
+        component: () => import('../domain/accounts/invoices/InvoicesList.vue'),
+      },
       {
         path: '/invoicing/new-invoice',
         name: 'New Invoice',

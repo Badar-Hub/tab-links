@@ -4,12 +4,14 @@ const Account = new mongoose.Schema({
 	type: {
 		type: String,
 	},
-	name: {
+	customerName: {
 		type: String,
 	},
 	invoiceNo: {
 		type: Number,
-		default: 0,
+	},
+	reference: {
+		type: String
 	},
 	totalValue: {
 		type: Number,
@@ -18,10 +20,6 @@ const Account = new mongoose.Schema({
 	paidValue: {
 		type: Number,
 		default: 0,
-	},
-	isPaid: {
-		type: Boolean,
-		default: false,
 	},
 	createdAt: {
 		type: String,

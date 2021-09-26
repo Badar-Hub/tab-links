@@ -13,19 +13,6 @@ const Product = new mongoose.Schema({
 	category: {
 		type: String,
 	},
-	price: {
-		type: Number,
-	},
-	discount: {
-		type: Number,
-	},
-	quantity: {
-		type: Number,
-		default: 0
-	},
-	costPrice: {
-		type: Number,
-	},
 	createdAt: {
 		type: String,
 	},

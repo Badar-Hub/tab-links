@@ -84,9 +84,6 @@ export default defineComponent({
         new Column('name', 'Name', true),
         new Column('brand', 'Brand', true),
         new Column('category', 'Category', true),
-        new Column('price', 'Price', true),
-        new Column('discount', 'Discount', true),
-        new Column('quantity', 'Quantity', true),
         new Column('actions', 'Actions', false, true),
       ])
     );

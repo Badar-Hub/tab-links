@@ -3,8 +3,7 @@ import { ProductSchema } from '~/schemas/Product';
 
 export const newProduct = async (request, response) => {
 	try {
-		const { sku, brand, category, name, price, discount, costPrice } =
-			request.body;
+		const { sku, brand, category, name } = request.body;
 
 		const checkName = await ProductSchema.findOne({ name });
 		if (checkName) {
@@ -23,9 +22,6 @@ export const newProduct = async (request, response) => {
 			brand,
 			category,
 			name,
-			price,
-			discount,
-			costPrice,
 			createdAt: new Date().toISOString(),
 		});
 

@@ -57,28 +57,65 @@
         />
       </div>
       <div class="col col-xs-12 q-my-sm q-px-md">
-        <q-card>
-          <q-card-section>
-            <div
-              class="q-my-sm"
-              v-for="(product, index) in newInvoice.products"
-              :key="index"
-            >
-              <InvoiceProduct
-                @removeProduct="removeProduct(index)"
-                :products="productsList"
-                :invoice="product"
+        <Table
+          class="full-width"
+          :isLoading="isLoading"
+          :data="data"
+          :tableDef="tableDef"
+          separator="cell"
+          :disableFilter="true"
+          :rowsPerPageOptions="[1000]"
+        >
+          <template #table-top>
+            <div class="row full-width justify-between">
+              <div class="col-xs-10 q-pr-sm">
+                <q-input
+                  outlined
+                  type="number"
+                  label="Add Rows"
+                  v-model="rowsOnPage"
+                />
+              </div>
+              <div class="col-xs-2 q-my-auto q-px-sm">
+                <q-btn label="Submit" color="primary" @click="addRows" />
+              </div>
+            </div>
+          </template>
+          <template #name="{ props }">
+            <div class="row full-width">
+              <q-select
+                borderless
+                use-input
+                input-debounce="0"
+                :options="productsList"
+                v-model="props.row.name"
+                label="Select Product"
+                @filter="filterFn"
               />
             </div>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="col-xs-12 q-px-md">
-        <q-btn
-          :disable="diableNewProduct"
-          label="Add Another Product"
-          @click="addAnotherProduct"
-        />
+          </template>
+          <template #quantity="{ props }">
+            <q-input
+              borderless
+              type="number"
+              v-model.number="props.row.quantity"
+            />
+          </template>
+          <template #price="{ props }">
+            <q-input
+              borderless
+              type="number"
+              v-model.number="props.row.price"
+            />
+          </template>
+          <template #discount="{ props }">
+            <q-input
+              borderless
+              type="number"
+              v-model.number="props.row.discount"
+            />
+          </template>
+        </Table>
       </div>
       <div v-if="isTotalValue" class="col-xs-12 text-right q-my-sm q-px-xl">
         <h6 class="q-my-sm">Rs: {{ newInvoice.totalValue }}</h6>
@@ -104,11 +141,16 @@ import CustomerModel from '../../customers/CustomerModel';
 import ProductModel from '../../products/ProductModel';
 import ProductService from '../../products/ProductService';
 import NewInvoiceModel from '../NewInvoiceModel';
-import InvoiceProduct from './InvoiceProduct.vue';
+// import InvoiceProduct from './InvoiceProduct.vue';
 import AccountsService from '../AccountsService';
+import Table from '../../../components/General/Table/Table.vue';
+import PagedResultModel from '../../../interfaces/PagedResultModel';
+import TableModel from '../../../components/General/Table/TableModel';
+import Column from '../../../components/General/Table/ColumnModel';
+import ProductListModel from '../ProductListModel';
 
 export default defineComponent({
-  components: { InvoiceProduct },
+  components: { Table },
   setup() {
     const newInvoice = ref<NewInvoiceModel>({
       customerName: '',
@@ -118,7 +160,33 @@ export default defineComponent({
       products: [
         {
           name: '',
-          quantity: 1,
+          quantity: 0,
+          price: 0,
+          discount: 0,
+        },
+        {
+          name: '',
+          quantity: 0,
+          price: 0,
+          discount: 0,
+        },
+        {
+          name: '',
+          quantity: 0,
+          price: 0,
+          discount: 0,
+        },
+        {
+          name: '',
+          quantity: 0,
+          price: 0,
+          discount: 0,
+        },
+        {
+          name: '',
+          quantity: 0,
+          price: 0,
+          discount: 0,
         },
       ],
       totalValue: 0,
@@ -130,7 +198,28 @@ export default defineComponent({
     const totalValueArr = ref<Array<number>>([]);
     const isTotalValue = ref(false);
     const isEditable = ref(true);
-    const diableNewProduct = ref(false);
+    const isLoading = ref(false);
+    const rowsOnPage = ref(0);
+    const data = ref<PagedResultModel<ProductListModel>>(
+      new PagedResultModel<ProductListModel>()
+    );
+    const tableDef = ref<TableModel>(
+      new TableModel([
+        new Column('name', 'Name', false, true),
+        new Column('quantity', 'Quantity', false, true),
+        new Column('price', 'Price', false, true),
+        new Column('discount', 'Discount (%)', false, true),
+      ])
+    );
+
+    const filterFn = (val: any, update: any) => {
+      update(() => {
+        const needle = val.toLowerCase();
+        productsList.value = productsList.value.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    };
 
     watch(
       () => newInvoice.value.products.length,
@@ -143,14 +232,6 @@ export default defineComponent({
       }
     );
 
-    watch(
-      () => productsList.value,
-      () => {
-        diableNewProduct.value = productsList.value.length - 1 ? false : true;
-        console.log(productsList.value, productsList.value.length);
-      }
-    );
-
     const calculateTotal = () => {
       isTotalValue.value = true;
       newInvoice.value.totalValue = 0;
@@ -159,25 +240,20 @@ export default defineComponent({
         const prod = products.value.find(
           (productFind) => productFind.name === product.name
         );
-        if (prod && prod.discount) {
-          totalValueArr.value.push(
-            prod.discount
-              ? prod.discount * product.quantity
-              : prod.price * product.quantity
-          );
-        }
+        console.log(prod);
+
+        // if (prod && prod.discount) {
+        //   totalValueArr.value.push(
+        //     prod.discount
+        //       ? prod.discount * product.quantity
+        //       : prod.price * product.quantity
+        //   );
+        // }
       });
       newInvoice.value.totalValue = totalValueArr.value.reduce(
         (a: number, b: number) => a + b
       );
       console.log(newInvoice.value.totalValue);
-    };
-
-    const addAnotherProduct = () => {
-      newInvoice.value.products.push({
-        name: '',
-        quantity: 1,
-      });
     };
 
     const removeProduct = (index: number) => {
@@ -228,9 +304,23 @@ export default defineComponent({
       }
     };
 
+    const addRows = () => {
+      const addMoreRows = {
+        name: '',
+        quantity: 0,
+        price: 0,
+        discount: 0,
+      };
+
+      for (let i = 0; i < rowsOnPage.value; i++) {
+        newInvoice.value.products.push(addMoreRows);
+      }
+    };
+
     onMounted(async () => {
       try {
         generateInvoiceNo();
+        data.value.results = newInvoice.value.products;
         products.value = await ProductService.getProducts();
         productsList.value = products.value.map(
           (product: ProductModel) => product.name
@@ -245,19 +335,23 @@ export default defineComponent({
     });
 
     return {
-      newInvoice,
-      productsList,
-      addAnotherProduct,
-      customerList,
-      removeProduct,
-      totalValue,
+      data,
+      addRows,
+      tableDef,
       products,
-      calculateTotal,
-      isTotalValue,
       onSubmit,
+      filterFn,
       setToEdit,
+      isLoading,
       isEditable,
-      diableNewProduct,
+      rowsOnPage,
+      newInvoice,
+      totalValue,
+      productsList,
+      customerList,
+      isTotalValue,
+      removeProduct,
+      calculateTotal,
     };
   },
 });
