@@ -1,15 +1,33 @@
 <template>
-  <div class="q-pa-md">
-    <Filter :filters="tableDef.columns" />
+  <div class="custom-table q-pa-md">
+    <Filter v-show="!disableFilter" :filters="tableDef.columns" />
+    <div class="row q-my-sm">
+      <div class="col col-xs-12 col-sm-6">
+        <slot name="table-top"></slot>
+      </div>
+      <div class="col col-xs-12 col-sm-6 text-right q-my-auto">
+        <q-btn
+          icon="archive"
+          color="primary"
+          label="Export to csv"
+          no-caps
+          unelevated
+          @click="exportTable"
+        />
+      </div>
+    </div>
     <q-table
+      class="table"
       :loading="isLoading"
       :rows="data.results"
       :columns="tableDef.columns"
       @request="dataRequest"
-      :rows-per-page-options="[7, 10, 25, 50]"
+      :rows-per-page-options="rowsPerPageOptions"
       :filter="filter"
+      virtual-scroll
+      :separator="separator"
     >
-      <template v-slot:top-right>
+      <template v-if="!disableFilter" v-slot:top>
         <q-input
           borderless
           dense
@@ -57,7 +75,7 @@
         </q-td>
       </template>
 
-      <template v-slot:bottom-row>
+      <!-- <template v-slot:bottom>
         <div class="q-table-bottom-row">
           <q-btn
             icon="archive"
@@ -69,7 +87,7 @@
             @click="exportTable"
           />
         </div>
-      </template>
+      </template> -->
     </q-table>
   </div>
 </template>
@@ -113,6 +131,18 @@ export default defineComponent({
         results: [],
         rowCount: 1,
       }),
+    },
+    separator: {
+      type: String,
+      default: () => 'horizontal',
+    },
+    rowsPerPageOptions: {
+      type: Array,
+      default: () => [7, 10, 25, 50],
+    },
+    disableFilter: {
+      type: Boolean,
+      default: () => false,
     },
     tableDef: { type: TableModel, required: true, default: new TableModel([]) },
     isLoading: { type: Boolean, required: true, default: true },
@@ -207,30 +237,48 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.simple-mode {
+.custom-table {
+  .table {
+    max-height: 450px;
+    height: auto;
+    .q-table__top,
+    .q-table__bottom,
+    thead tr:first-child th {
+      /* bg color is important for th; just specify one */
+      background-color: #fff;
+    }
+    thead,
+    tr th {
+      position: sticky;
+      z-index: 1;
+      background-color: #fff;
+    }
+    /* this will be the loading indicator */
+    thead tr:last-child,
+    th {
+      /* height of all previous header rows */
+      background-color: #fff;
+      thead tr:first-child, th {
+        // top: 15px;
+      }
+    }
+  }
   tr:nth-child(even) {
-    background-color: white;
+    background-color: #f2f2f2;
   }
-}
 
-table > *:last-child > tr:last-of-type td {
-  border: none;
-}
-.q-table-bottom-row {
-  position: absolute;
-  margin-bottom: 10px;
-  padding: 8px 20px;
-}
-.q-table__bottom {
-  @media (max-width: 598px) {
-    padding-top: 8px;
-  }
-  @media (max-width: 515px) {
-    padding-top: 40px;
+  // .q-table-bottom-row {
+  //   position: absolute;
+  //   margin-bottom: 20px;
+  //   padding: 8px 20px;
+  // }
+  .q-table__bottom {
+    @media (max-width: 598px) {
+      padding-top: 8px;
+    }
+    @media (max-width: 515px) {
+      padding-top: 40px;
+    }
   }
 }
 </style>

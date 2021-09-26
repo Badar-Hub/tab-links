@@ -5,28 +5,38 @@ export const updateRecevingInfo = async (request, response) => {
 	try {
 		const { id } = request.params;
 
-		const { vendor, invoiceNo, date, reference, products } = request.body;
+		const {
+			vendorName,
+			receivingNumber,
+			date,
+			reference,
+			products,
+			totalValue,
+		} = request.body;
 
 		const item = await InventorySchema.findById(id);
 		if (!item) {
 			throw new Error("Product with this ID does't exist");
 		}
 
-		if (item.grMo !== grMo) {
-			const checkGR = await InventorySchema.findOne({ grMo });
+		if (item.receivingNumber !== receivingNumber) {
+			const checkGR = await InventorySchema.findOne({ receivingNumber });
 			if (checkGR) {
-				throw new Error('Receving with this GR Number already exist');
+				throw new Error(
+					'Receving with this Receiving Number already exist',
+				);
 			}
 		}
 
 		const updatedItem = await InventorySchema.updateOne({
 			_id: id,
 			$set: {
-				vendor,
-				invoiceNo,
+				vendorName,
+				receivingNumber,
 				date,
 				reference,
 				products,
+				totalValue,
 			},
 		});
 

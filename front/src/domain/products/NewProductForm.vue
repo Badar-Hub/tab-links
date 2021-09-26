@@ -43,36 +43,6 @@
           ]"
         />
       </div>
-      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-        <q-input
-          filled
-          v-model="product.price"
-          type="number"
-          label="Price"
-          lazy-rules
-          :rules="[(val) => val > 0 || 'Please enter a valid value']"
-        />
-      </div>
-      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-        <q-input
-          filled
-          v-model="product.discount"
-          type="number"
-          label="Discount"
-          lazy-rules
-          :rules="[(val) => val >= 0 || 'Please enter a valid value']"
-        />
-      </div>
-      <div class="col-xs-12 col-sm-6 q-px-xs q-my-xs">
-        <q-input
-          filled
-          v-model="product.costPrice"
-          type="number"
-          label="Cost Price"
-          lazy-rules
-          :rules="[(val) => val > 0 || 'Please enter a valid value']"
-        />
-      </div>
       <div class="col-xs-12 q-my-xs">
         <q-btn
           type="submit"
@@ -113,10 +83,6 @@ export default defineComponent({
       name: '',
       brand: '',
       category: '',
-      price: 0,
-      discount: 0,
-      quantity: 0,
-      costPrice: 0,
     });
 
     const resetForm = () => {
@@ -125,10 +91,6 @@ export default defineComponent({
       product.value.name = '';
       product.value.brand = '';
       product.value.category = '';
-      product.value.price = 0;
-      product.value.discount = 0;
-      product.value.quantity = 0;
-      product.value.costPrice = 0;
     };
 
     const setToEdit = (productData: ProductModel) => {
@@ -137,10 +99,6 @@ export default defineComponent({
       product.value.name = productData.name;
       product.value.brand = productData.brand;
       product.value.category = productData.category;
-      product.value.price = productData.price;
-      product.value.discount = productData.discount;
-      product.value.quantity = productData.quantity;
-      product.value.costPrice = productData.costPrice;
     };
 
     const onSubmit = async () => {
