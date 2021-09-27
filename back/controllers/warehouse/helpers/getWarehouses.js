@@ -1,9 +1,9 @@
 import { logger, sendSuccess, sendError } from '~/utils';
-import { BrandSchema } from '~/schemas/Brand';
+import { WarehouseSchema } from 'schemas/Warehouse';
 
 export const getWarehouses = async (_, response) => {
 	try {
-		const warehouses = await BrandSchema.find();
+		const warehouses = await WarehouseSchema.find();
 
 		if (!warehouses) {
 			throw new Error('Invalid request');

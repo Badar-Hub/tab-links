@@ -18,7 +18,6 @@ router.post(
 			{
 				vendorName: request.body.vendorName,
 				receivingNumber: request.body.receivingNumber,
-				reference: request.body.reference,
 				date: request.body.date,
 				products: request.body.products,
 				totalValue: request.body.totalValue,
@@ -26,10 +25,9 @@ router.post(
 			{
 				vendorName: 'required|string',
 				receivingNumber: 'required|integer',
-				reference: 'required|string',
 				date: 'required|string',
 				products: 'required',
-				totalValue: 'required|string',
+				totalValue: 'required|integer',
 			},
 		);
 	},
@@ -44,22 +42,20 @@ router.put(
 			response,
 			next,
 			{
-				id: request.headers.id,
+				_id: request.body._id,
 				vendorName: request.body.vendorName,
 				receivingNumber: request.body.receivingNumber,
-				reference: request.body.reference,
 				date: request.body.date,
 				products: request.body.products,
 				totalValue: request.body.totalValue,
 			},
 			{
-				id: 'required|string',
+				_id: 'required|string',
 				vendorName: 'required|string',
 				receivingNumber: 'required|integer',
-				reference: 'required|string',
 				date: 'required|string',
 				products: 'required',
-				totalValue: 'required|string',
+				totalValue: 'required|integer',
 			},
 		);
 	},

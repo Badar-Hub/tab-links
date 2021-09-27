@@ -3,7 +3,8 @@ import { UserSchema } from '~/schemas/User';
 
 export const getUsers = async (_, response) => {
 	try {
-		const users = await UserSchema.find();
+		const data = await UserSchema.find();
+		const users = data.map(user => user.email)
 
 		return sendSuccess({ data: users }, response);
 	} catch (exception) {
