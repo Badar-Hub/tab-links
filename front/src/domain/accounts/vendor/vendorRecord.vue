@@ -74,14 +74,16 @@ export default defineComponent({
     ReceiveProducts,
   },
   setup() {
+    const newDate = new Date().toJSON();
     const invoices = ref<InventoryModel[]>([]);
     const invoice = ref<InventoryModel | undefined>({
       _id: '',
-      vendor: '',
-      invoiceNo: 0,
-      date: '',
+      vendorName: '',
+      receivingNumber: 0,
+      date: newDate,
       reference: '',
       products: [],
+      totalValue: 0
     });
     const inventoryRef = ref();
     const route = useRoute();
@@ -91,7 +93,7 @@ export default defineComponent({
       try {
         const data = await InventoryService.getInventoryList();
         invoices.value = data.filter(
-          (item: InventoryModel) => item.vendor === route.params.id
+          (item: InventoryModel) => item.vendorName === route.params.id
         );
       } catch (error) {
         console.log(error);

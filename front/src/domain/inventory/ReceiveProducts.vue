@@ -1,18 +1,22 @@
 <template>
-  <q-form @submit="onSubmit">
+  <q-form @submit="isEditing ? updateReceiving() : onSubmit()">
     <div class="row">
       <div class="col-xs-12 col-sm-6 q-pa-sm">
         <q-select
-          v-model="receiveItems.vendor"
+          v-model="receiveItems.vendorName"
           :options="vendors"
           label="Select Vendor"
           filled
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Please select a Vendor',
+          ]"
         />
       </div>
       <div class="col-xs-12 col-sm-6 q-pa-sm">
         <q-input
           disable
-          v-model="receiveItems.invoiceNo"
+          v-model="receiveItems.receivingNumber"
           label="Invoice No"
           filled
         />
@@ -45,7 +49,7 @@
         <q-input v-model="receiveItems.reference" label="Reference" filled />
       </div>
     </div>
-    <q-card
+    <!-- <q-card
       v-for="(item, i) in receiveItems.products"
       bordered
       flat
@@ -94,12 +98,115 @@
           </div>
         </div>
       </q-card-section>
-    </q-card>
+    </q-card> -->
+    <!-- <Table
+      class="full-width"
+      :isLoading="isLoading"
+      :data="data"
+      :tableDef="tableDef"
+    >
+      <template #date="{ props }">
+        <div class="row">
+          <p>{{ props.row.date }}</p>
+        </div>
+      </template>
+      <template #actions="{ props }">
+        <div class="row">
+          <q-btn
+            class="q-pa-none"
+            flat
+            round
+            color="primary"
+            icon="close"
+            @click="removeCurrentIndex(props.row)"
+          />
+        </div>
+      </template>
+    </Table> -->
+    <Table
+      class="full-width"
+      :isLoading="isLoading"
+      :data="data"
+      :tableDef="tableDef"
+      separator="cell"
+      :disableFilter="true"
+      :rowsPerPageOptions="[1000]"
+    >
+      <template #table-top>
+        <div class="row full-width justify-between">
+          <div class="col-xs-10 q-pr-sm">
+            <q-input
+              outlined
+              type="number"
+              label="Add Rows"
+              v-model="rowsOnPage"
+            />
+          </div>
+          <div class="col-xs-2 q-my-auto q-px-sm">
+            <q-btn label="Submit" color="primary" @click="addRows" />
+          </div>
+        </div>
+      </template>
+      <template #name="{ props }">
+        <div class="row full-width">
+          <q-select
+            borderless
+            use-input
+            input-debounce="0"
+            :options="products"
+            v-model="props.row.name"
+            label="Select Product"
+            @filter="filterFn"
+          />
+        </div>
+      </template>
+      <template #quantity="{ props }">
+        <q-input borderless type="number" v-model.number="props.row.quantity" />
+      </template>
+      <template #costPrice="{ props }">
+        <q-input
+          borderless
+          type="number"
+          v-model.number="props.row.costPrice"
+        />
+      </template>
+      <template #salePrice="{ props }">
+        <q-input
+          borderless
+          type="number"
+          v-model.number="props.row.salePrice"
+        />
+      </template>
+      <template #batchNumber="{ props }">
+        <q-input
+          borderless
+          type="number"
+          v-model.number="props.row.batchNumber"
+        />
+      </template>
+      <template #actions="{ props }">
+        <div class="row">
+          <q-btn
+            class="q-pa-none"
+            flat
+            round
+            color="primary"
+            icon="close"
+            @click="removeCurrentIndex(props.row)"
+          />
+        </div>
+      </template>
+    </Table>
     <div class="row">
       <q-btn @click="addNewItem" label="Add Product" />
     </div>
     <div class="row q-my-sm">
-      <q-btn type="submit" label="Submit" color="primary" class="full-width" />
+      <q-btn
+        type="submit"
+        :label="isEditing ? 'Update Receiving' : 'Submit'"
+        color="primary"
+        class="full-width"
+      />
     </div>
   </q-form>
 </template>
@@ -109,76 +216,140 @@ import { ref, defineComponent, onMounted } from 'vue';
 import InventoryModel from './InventoryModel';
 import ProductService from '../products/ProductService';
 import ProductModel from '../products/ProductModel';
+import InventoryProductModel from './ProductModel';
 import InventoryService from './InventoryService';
 import VendorService from '../vendors/VendorService';
 import VendorModel from '../vendors/VendorModel';
+import TableModel from '../../components/General/Table/TableModel';
+import PagedResultModel from '../../interfaces/PagedResultModel';
+import Column from '../../components/General/Table/ColumnModel';
+import Table from '../../components/General/Table/Table.vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
-  emits: ['close'],
+  components: { Table },
+  emits: ['close', 'refreshList'],
   setup(_, context) {
+    const isLoading = ref(false);
+    const isEditing = ref(false);
+    const newDate = new Date().toJSON();
+    const vendors = ref<Array<String>>([]);
+    const products = ref<Array<string>>([]);
+    const $q = useQuasar();
+
     const receiveItems = ref<InventoryModel>({
-      vendor: '',
-      invoiceNo: 0,
-      date: '2021/02/01',
+      vendorName: '',
+      receivingNumber: 0,
+      date: newDate,
       reference: '',
       products: [
         {
           name: '',
+          batchNumber: '0',
           quantity: 0,
           costPrice: 0,
+          salePrice: 0,
         },
       ],
+      totalValue: 5,
     });
 
-    const vendors = ref<Array<String>>([]);
-    const products = ref<[]>([]);
-
-    const resetForm = () => {
-      receiveItems.value = {
-        vendor: '',
-        invoiceNo: 0,
-        date: '2021/02/01',
-        reference: '',
-        products: [
-          {
-            name: '',
-            quantity: 0,
-            costPrice: 0,
-          },
-        ],
-      };
-      generateInvoiceNo();
-    };
+    const data = ref<PagedResultModel<InventoryProductModel>>(
+      new PagedResultModel<InventoryProductModel>()
+    );
+    const tableDef = ref<TableModel>(
+      new TableModel([
+        new Column('name', 'Name', true, true),
+        new Column('batchNumber', 'Batch Number', true, true),
+        new Column('quantity', 'Quantity', true, true),
+        new Column('costPrice', 'Cost Price', true, true),
+        new Column('salePrice', 'Sale Price', true, true),
+        new Column('actions', 'Actions', false, true),
+      ])
+    );
 
     async function generateInvoiceNo() {
       try {
         const data = await InventoryService.getInventoryList();
-        receiveItems.value.invoiceNo = data.length;
+        receiveItems.value.receivingNumber = data.length;
       } catch (error) {
         console.log(error);
       }
     }
 
+    const resetForm = () => {
+      receiveItems.value = {
+        vendorName: '',
+        receivingNumber: 0,
+        date: newDate,
+        reference: '',
+        products: [
+          {
+            name: '',
+            batchNumber: '0',
+            quantity: 0,
+            costPrice: 0,
+            salePrice: 0,
+          },
+        ],
+        totalValue: 0,
+      };
+      generateInvoiceNo();
+    };
+
     const setToEdit = (item: InventoryModel) => {
+      isEditing.value = true;
+      isLoading.value = true;
       receiveItems.value._id = item._id;
-      receiveItems.value.vendor = item.vendor;
-      receiveItems.value.invoiceNo = item.invoiceNo;
+      receiveItems.value.vendorName = item.vendorName;
+      receiveItems.value.receivingNumber = item.receivingNumber;
       receiveItems.value.date = item.date;
       receiveItems.value.reference = item.reference;
       receiveItems.value.products = item.products;
+      data.value.results = receiveItems.value.products;
+      isLoading.value = false;
+    };
+
+    const totalAmount = () => {
+      const temp: number[] = [];
+      receiveItems.value.products = data.value.results;
+      receiveItems.value.products.forEach((x) =>
+        temp.push(x.quantity * x.costPrice)
+      );
+      receiveItems.value.totalValue = temp.reduce((a, b) => a + b);
     };
 
     const onSubmit = async () => {
+      totalAmount();
       try {
         await InventoryService.receiveProducts(receiveItems.value);
+        $q.notify({
+          color: 'primary',
+          message: 'Added Successfully',
+        });
         resetForm();
-        context.emit('close');
+        context.emit("refreshList")
       } catch (error) {
         console.log(error);
       }
     };
 
-    const removeCurrentIndex = (index: Number) => {
+    const updateReceiving = async () => {
+      totalAmount();
+      try {
+        await InventoryService.updateReceiving(receiveItems.value);
+        $q.notify({
+          color: 'primary',
+          message: 'Updated Successfully',
+        });
+        resetForm();
+        context.emit("refreshList")
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const removeCurrentIndex = (index: number) => {
       receiveItems.value.products = receiveItems.value.products.filter(
         (x, i) => i !== index
       );
@@ -189,18 +360,31 @@ export default defineComponent({
         id: '',
         name: '',
         quantity: 0,
+        batchNumber: '0',
         costPrice: 0,
+        salePrice: 0,
       };
-      receiveItems.value.products.push(newItem);
+      data.value.results.push(newItem);
+    };
+
+    const filterFn = (val: any, update: any) => {
+      update(() => {
+        const needle = val.toLowerCase();
+        products.value = products.value.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
+      });
     };
 
     onMounted(async () => {
       try {
-        generateInvoiceNo();
+        await generateInvoiceNo();
+        data.value.results = receiveItems.value.products;
         const productsReq = await ProductService.getProducts();
         products.value = productsReq.map(
           (product: ProductModel) => product.name
         );
+        console.log(products.value);
         const vendorReq = await VendorService.getVendors();
         vendors.value = vendorReq.map((vendor: VendorModel) => vendor.name);
       } catch (error) {
@@ -209,14 +393,20 @@ export default defineComponent({
     });
 
     return {
-      addNewItem,
+      data,
+      vendors,
+      tableDef,
+      products,
+      isLoading,
+      isEditing,
+      receiveItems,
+      onSubmit,
+      filterFn,
       setToEdit,
       resetForm,
-      receiveItems,
-      products,
+      addNewItem,
+      updateReceiving,
       removeCurrentIndex,
-      onSubmit,
-      vendors,
     };
   },
 });

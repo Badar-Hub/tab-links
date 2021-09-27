@@ -19,6 +19,11 @@
           <h6 class="q-my-sm cl-white">Invoicing</h6>
         </div>
       </router-link>
+      <router-link class="button" to="/inventory">
+        <div class="row q-px-xl q-my-sm button">
+          <h6 class="q-my-sm cl-white">Inventory</h6>
+        </div>
+      </router-link>
       <router-link class="button" to="/accounting">
         <div class="row q-px-xl q-my-sm button">
           <h6 class="q-my-sm cl-white">Accounting</h6>

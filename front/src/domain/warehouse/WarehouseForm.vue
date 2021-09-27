@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div @keypress.enter="submit" class="row">
     <div class="col-xs-12 col-sm-4 q-pa-sm">
       <q-input label="Name" v-model="warehouse.name" />
     </div>
@@ -20,6 +20,7 @@
       <q-btn
         class="full-width"
         color="primary"
+        :loading="isLoading"
         label="Submit"
         @click="submit"
       />
@@ -36,26 +37,48 @@
 </template>
 
 <script lang="ts">
+import { useQuasar } from 'quasar';
 import { defineComponent, onMounted, ref } from 'vue';
 import UserService from '../../services/UserService';
+import WarehouseModel from './WarehouseModel';
+import WarehouseService from './WarehouseService';
 
 export default defineComponent({
-  emits: ['close'],
-  setup() {
+  emits: ['close', 'refreshList'],
+  setup(_, context) {
     const userOptions = ref<Array<string>>([]);
-    const warehouse = ref({
+    const $q = useQuasar();
+    const isLoading = ref(false);
+    const warehouse = ref<WarehouseModel>({
       name: '',
-      paddress: '',
-      phone: '',
+      address: '',
+      phone: 0,
       inCharge: '',
     });
 
     const getUsers = async () => {
       try {
         const users = await UserService.getUsers();
-        console.log(users);
+        userOptions.value = users;
       } catch (error) {
         console.log(error);
+      }
+    };
+
+    const submit = async () => {
+      try {
+        isLoading.value = true;
+        await WarehouseService.newWarehouse(warehouse.value);
+        $q.notify({
+          message: 'New warehouse has been created successfully',
+        });
+        context.emit('refreshList');
+        isLoading.value = false;
+      } catch (error) {
+        console.log(error);
+        $q.notify({
+          message: 'An error occoured',
+        });
       }
     };
 
@@ -64,8 +87,10 @@ export default defineComponent({
     });
 
     return {
-      userOptions,
+      submit,
       warehouse,
+      isLoading,
+      userOptions,
     };
   },
 });

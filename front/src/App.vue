@@ -78,7 +78,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import Sidebar from './components/Layout/Sidebar/Sidebar.vue';
 import UserService from './services/UserService';
-import UserModel from './interfaces/UserModel';
+import LoginModel from './interfaces/LoginModel';
 import { RouteRecordRaw, useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 
@@ -92,7 +92,7 @@ export default {
     const isLoading = ref(false);
     const $q = useQuasar();
     const subRoutes = ref<RouteRecordRaw[] | undefined>([]);
-    const user = ref<UserModel>({
+    const user = ref<LoginModel>({
       email: '',
       password: '',
     });
