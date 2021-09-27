@@ -3,7 +3,7 @@ import { InventorySchema } from '~/schemas/Inventory';
 
 export const updateRecevingInfo = async (request, response) => {
 	try {
-		const { id } = request.params;
+		const { _id } = request.body;
 
 		const {
 			vendorName,
@@ -14,7 +14,7 @@ export const updateRecevingInfo = async (request, response) => {
 			totalValue,
 		} = request.body;
 
-		const item = await InventorySchema.findById(id);
+		const item = await InventorySchema.findById(_id);
 		if (!item) {
 			throw new Error("Product with this ID does't exist");
 		}
@@ -29,7 +29,7 @@ export const updateRecevingInfo = async (request, response) => {
 		}
 
 		const updatedItem = await InventorySchema.updateOne({
-			_id: id,
+			_id,
 			$set: {
 				vendorName,
 				receivingNumber,

@@ -1,10 +1,10 @@
 import { logger, sendSuccess, sendError } from '~/utils';
-import { BrandSchema } from '~/schemas/Brand';
+import { WarehouseSchema } from 'schemas/Warehouse';
 
 export const getWarehouse = async (request, response) => {
 	const { id } = request.headers;
 	try {
-		const warehouse = await BrandSchema.findById(id);
+		const warehouse = await WarehouseSchema.findById(id);
 
 		if (!warehouse) {
 			throw new Error('Invalid request');

@@ -11,7 +11,7 @@ export const newWarehouse = async (request, response) => {
 			throw new Error('Warehouse with this name already exist');
 		}
 
-		const user = await UserSchema.findOne({ name: inCharge });
+		const user = await UserSchema.findOne({ email: inCharge });
 		if (!user) {
 			throw new Error('User Not Found');
 		}
