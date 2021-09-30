@@ -48,6 +48,14 @@
       <div class="col-xs-12 col-sm-6 q-pa-sm">
         <q-input v-model="receiveItems.reference" label="Reference" filled />
       </div>
+      <div class="col-xs-12 col-sm-6 q-pa-sm">
+        <q-select
+          :options="warehousesList"
+          v-model="receiveItems.warehouse"
+          label="Warehouse"
+          filled
+        />
+      </div>
     </div>
     <!-- <q-card
       v-for="(item, i) in receiveItems.products"
@@ -225,6 +233,8 @@ import PagedResultModel from '../../interfaces/PagedResultModel';
 import Column from '../../components/General/Table/ColumnModel';
 import Table from '../../components/General/Table/Table.vue';
 import { useQuasar } from 'quasar';
+import WarehouseService from '../warehouse/WarehouseService';
+import WarehouseModel from '../warehouse/WarehouseModel';
 
 export default defineComponent({
   components: { Table },
@@ -235,12 +245,14 @@ export default defineComponent({
     const newDate = new Date().toJSON();
     const vendors = ref<Array<String>>([]);
     const products = ref<Array<string>>([]);
+    const warehousesList = ref<Array<string>>([]);
     const $q = useQuasar();
 
     const receiveItems = ref<InventoryModel>({
       vendorName: '',
       receivingNumber: 0,
       date: newDate,
+      warehouse: '',
       reference: '',
       products: [
         {
@@ -280,6 +292,7 @@ export default defineComponent({
     const resetForm = () => {
       receiveItems.value = {
         vendorName: '',
+        warehouse: '',
         receivingNumber: 0,
         date: newDate,
         reference: '',
@@ -295,6 +308,15 @@ export default defineComponent({
         totalValue: 0,
       };
       generateInvoiceNo();
+    };
+
+    const getWarehouses = async () => {
+      try {
+        const data: WarehouseModel[] = await WarehouseService.getWarehouses();
+        warehousesList.value = data.map((x) => x.name);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     const setToEdit = (item: InventoryModel) => {
@@ -328,7 +350,7 @@ export default defineComponent({
           message: 'Added Successfully',
         });
         resetForm();
-        context.emit("refreshList")
+        context.emit('refreshList');
       } catch (error) {
         console.log(error);
       }
@@ -343,7 +365,7 @@ export default defineComponent({
           message: 'Updated Successfully',
         });
         resetForm();
-        context.emit("refreshList")
+        context.emit('refreshList');
       } catch (error) {
         console.log(error);
       }
@@ -379,6 +401,7 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await generateInvoiceNo();
+        await getWarehouses();
         data.value.results = receiveItems.value.products;
         const productsReq = await ProductService.getProducts();
         products.value = productsReq.map(
@@ -400,6 +423,7 @@ export default defineComponent({
       isLoading,
       isEditing,
       receiveItems,
+      warehousesList,
       onSubmit,
       filterFn,
       setToEdit,

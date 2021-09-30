@@ -79,6 +79,7 @@ export default defineComponent({
     const invoice = ref<InventoryModel | undefined>({
       _id: '',
       vendorName: '',
+      warehouse: '',
       receivingNumber: 0,
       date: newDate,
       reference: '',
