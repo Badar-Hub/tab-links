@@ -10,15 +10,24 @@ export default class UserService {
                 `${UserService.baseUrl[0]}/login`,
                 user
             );
-            return data.results.token.access_token;
+            return data.results;
         } catch (error) {
             console.log(error);
         }
     }
- 
+
     static async getUsers() {
         try {
             const data = await ApiService.get(UserService.baseUrl[1])
+            return data.results.data
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async getUser(id: string) {
+        try {
+            const data = await ApiService.get(`${UserService.baseUrl[1]}/${id}`)
             return data.results.data
         } catch (error) {
             console.log(error);

@@ -42,20 +42,14 @@
             <q-toolbar-title>
               <router-link class="no-underline" to="/">
                 <div class="row">
-                  <q-avatar>
-                    <img src="@/assets/logo.png" />
-                  </q-avatar>
-                  <h6 class="q-my-xs cl-white">
-                    Tech Origin
-                  </h6>
+                  <q-btn
+                    @click="leftDrawerOpen = !leftDrawerOpen"
+                    icon="menu"
+                    size="14px"
+                  />
                 </div>
               </router-link>
             </q-toolbar-title>
-            <q-btn
-              @click="leftDrawerOpen = !leftDrawerOpen"
-              icon="menu"
-              size="14px"
-            />
           </q-toolbar>
           <hr />
           <q-tabs v-show="subRoutes" align="left">
@@ -96,6 +90,10 @@ export default {
       email: '',
       password: '',
     });
+    const userInfo = ref({
+      warehouse: '',
+      username: '',
+    });
 
     const isLoggenIn = computed(() => {
       return localStorage.getItem('token') ? true : false;
@@ -105,7 +103,7 @@ export default {
       try {
         isLoading.value = true;
         const data = await UserService.loginUser(user.value);
-        localStorage.setItem('token', data);
+        localStorage.setItem('token', data.token.access_token);
         isLoading.value = false;
         window.location.reload();
         $q.notify({
@@ -140,11 +138,13 @@ export default {
     };
 
     onMounted(() => {
+      console.log(user.value);
       onRouteChange();
     });
 
     return {
       user,
+      userInfo,
       loginUser,
       isLoading,
       subRoutes,

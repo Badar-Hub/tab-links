@@ -110,6 +110,11 @@ const routes = [
         name: 'Vendor Records',
         component: () => import('../domain/accounts/vendor/vendorRecord.vue'),
       },
+      {
+        path: '/accounting/ledgers',
+        name: 'Accounting Ledgers',
+        component: () => import('../domain/accounts/ledgerAccounts/LedgerAccounts.vue'),
+      },
     ],
   },
   {
